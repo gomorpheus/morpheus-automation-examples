@@ -1,0 +1,5 @@
+yum install sssd realmd oddjob oddjob-mkhomedir adcli samba-common samba-common-tools krb5-workstation openldap-clients policycoreutils-python -y
+
+echo "<%=cypher.read('secret/domain')%>" | realm join --user=svcmorpheus "<%=container.domainName%>"
+
+history -cw

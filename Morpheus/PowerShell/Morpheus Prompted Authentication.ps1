@@ -9,7 +9,7 @@
 
     ####  Morpheus Variables  ####
     $Body = "username=$Username&password=$PlainTextPassword"
-    #$URL = Read-Host 'Enter Morpheus URL'
+    $URL = Read-Host 'Enter Morpheus URL'
     $AuthURL = "/oauth/token?grant_type=password&scope=write&client_id=morph-customer"
 
     ####  Create User Token   ####
