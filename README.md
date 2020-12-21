@@ -1,6 +1,6 @@
 ![Logo of the project](https://upload.wikimedia.org/wikipedia/commons/6/63/Morpheus-Data-Logo-360.png)
 
-# Morpheus Data: (Repo Name)
+# Morpheus Data: morpheus-automation-examples
 > Extenisible scripts for use with your Morpheus appliance
 
 A brief description of your project, what it is used for and how does life get
