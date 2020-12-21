@@ -1,3 +1,19 @@
+<#
+    .SYNOPSIS
+        This script automatically onlines and expands all drives found by the OS
+    
+    .DESCRIPTION
+        This script automatically onlines and expands all drives found by the OS.
+        Note: This does not expand if you have multiple partitions on the same Dynamic root disk as a precaution.
+        
+        Set this in the Pre-provision and Reconfigure phases of your provisioning Workflow.
+        There are additional loops in this to name new drives based on their label in Morpheus. This can be removed easily if not desired.
+
+    .EXAMPLE
+        1. PowerShell task with execute target as 'Resource'
+        2. Set Task as Pre-provision and Reconfigure Phase of Provisioning WorkFlow    
+#>
+
 #Variables
 $disks = get-disk
 $size = Get-PartitionSupportedSize -DriveLetter C
