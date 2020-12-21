@@ -1,0 +1,20 @@
+{
+	"Mappings" : {
+		"MorpheusMap" : {
+			"instance"	: {"Name" : "<%=instance.name%>"},
+            "application"   : {"Name" : "<%=customOptions.application%>"}
+		}
+	},
+	"Resources" : {
+		 "S3Bucket" : {
+			"Type" : "AWS::S3::Bucket",
+            "DeletionPolicy": "Delete",
+            "Properties" : {
+                "BucketName" : {"Fn::FindInMap" : ["MorpheusMap", "instance", "Name"]},
+                "Tags" : [
+                    {"Key" : "Application" , "Value" : {"Fn::FindInMap" : ["MorpheusMap", "application", "Name"]}}
+                ]
+            }
+        }
+	}
+}
