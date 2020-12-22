@@ -8,7 +8,7 @@ def description
 if(instance.apps) {
 description = "Created from App: ${instance.apps.first().name}"
 }
-def networkDomain = new com.morpheus.NetworkDomain(name:customOptions.domainName, description: description, owner: owner, domainController: true, domainUsername: 'Administrator', domainPassword: 'bertram4Admin!', dcServer: instance.name, account: owner, refType: 'Instance', refId: instance.id)
+def networkDomain = new com.morpheus.NetworkDomain(name:customOptions.domainName, description: description, owner: owner, domainController: true, domainUsername: 'Administrator', domainPassword: 'Password', dcServer: instance.name, account: owner, refType: 'Instance', refId: instance.id)
 
 networkDomain.save(flush:true,failOnError:true)
 
