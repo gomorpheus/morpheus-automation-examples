@@ -1,6 +1,6 @@
 # CentOS Images
 
-CentOS 7 and 8 images are available here: http://nctest-bucket.s3-website.us-east-2.amazonaws.com/
+CentOS 7 and 8 images are available here: http://morpheus-image-examples.s3-website-us-west-1.amazonaws.com/
 
 Among other featurees, these images include:
 
