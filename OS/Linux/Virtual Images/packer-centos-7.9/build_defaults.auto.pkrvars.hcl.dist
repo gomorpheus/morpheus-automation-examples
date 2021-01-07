@@ -1,0 +1,13 @@
+boot_command = "<up><tab><wait> text<enter><wait>"
+cd_files = ["files/ks.cfg"]
+guest_os_type = "centos64Guest"
+cpus = "1"
+memory = "512"
+disk_size = "5120"
+ssh_username = "root"
+ssh_password = "vagrant"
+ssh_wait_timeout = "20m"
+shutdown_command = "sys-unconfig"
+vm_network = "<Network Name>"
+remote_datastore = "<datastore_name>"
+esx_host = "<ESX IP>"
