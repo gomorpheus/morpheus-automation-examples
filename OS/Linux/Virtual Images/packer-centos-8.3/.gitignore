@@ -1,0 +1,3 @@
+build_defaults.*.hcl
+esxauth.*.hcl
+packer_output
