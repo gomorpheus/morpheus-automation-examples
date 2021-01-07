@@ -13,7 +13,18 @@ Among other featurees, these images include:
 
 ## Packer Examples
 
-These examples should work on Linux, MacOS, and WSL in Windows.  Install the latest version of packer and run using the following in the directory with all the hcl files:
+These examples should work on Linux, MacOS, and WSL in Windows.  Copy the and remove `.dist` from the `pkrvars` files to `.hcl` and modify the variables inside for your environment.  The important vars are:
+```
+vm_network # The name of the network to attach the template to while building
+remote_datastore # The name of the datastore to use
+esx_host # IP address of the esx host that vCenter will deploy to
+remote_host # IP of vCenter
+remote_username # Username on vCenter
+remote_password # Password on vCenter
+```
+
+
+Install the latest version of packer and run using the following in the directory with all the hcl files:
 ```
 packer build -on-error=ask .
 ```
