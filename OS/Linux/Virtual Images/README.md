@@ -10,3 +10,10 @@ Among other featurees, these images include:
 - Older versions are pinned to vault repositories, meaning they will receive no security updates.
   - These are meant for organizations with supplementary patching strategies.
 - Root password disabled, login using your Morpheus User Settings credentials or credentials supplied in your Virtual Image definition.
+
+## Packer Examples
+
+These examples should work on Linux, MacOS, and WSL in Windows.  Install the latest version of packer and run using the following in the directory with all the hcl files:
+```
+packer build -on-error=ask .
+```
