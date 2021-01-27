@@ -1,0 +1,11 @@
+---
+- hosts: all
+  gather_facts: true
+  tasks:
+    - name: Dump All hostvars for this instance
+      debug:
+        msg: "{{ hostvars[inventory_hostname] | to_nice_yaml }}"
+    
+    - name: Dump morpheus variable for this instance
+      debug:
+        msg: "{{ hostvars[inventory_hostname]['morpheus'] | to_nice_yaml }}"
