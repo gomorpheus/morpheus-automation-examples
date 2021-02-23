@@ -2,13 +2,6 @@
 set -e
 . /tmp/os_detect.sh
 
-# echo 1
-# for nic in /etc/sysconfig/network-scripts/ifcfg-eth*;
-# do
-#   sed -i /HWADDR/d $nic;
-#   sed -i /UUID/d $nic;
-# done
-
 echo 2
 sed 's/#PasswordAuthentication yes/PasswordAuthentication yes/' -i /etc/ssh/sshd_config
 echo 2.1
@@ -54,74 +47,6 @@ echo 5
 rpmdb --rebuilddb
 rm -f /var/lib/rpm/__db*
 
-# echo 6
-# if [[ $OS_VERSION =~ ^6 ]]; then
-#   mkdir /etc/udev/rules.d/70-persistent-net.rules
-# else
-# 	# if [ -f /etc/default/grub ]; then
-# 		# sed -i -e 's/quiet/quiet net.ifnames=0 biosdevname=0/' /etc/default/grub
-# 		# sed -i -e 's/\<rhgb\>//g' /etc/default/grub
-# 		# echo 7
-#                 # grub2-mkconfig -o /boot/grub2/grub.cfg
-# 	# fi
-# 	export iface_file=$(basename "$(find /etc/sysconfig/network-scripts/ -name 'ifcfg*' -not -name 'ifcfg-lo' | head -n 1)")
-# 	export iface_name=${iface_file:6}
-
-# 	if [ ! $iface_file == 'ifcfg-eth0' ]; then
-# 		mv /etc/sysconfig/network-scripts/$iface_file /etc/sysconfig/network-scripts/ifcfg-eth0
-# 	fi
-
-# 	sed -i -e "s/$iface_name/eth0/" /etc/sysconfig/network-scripts/ifcfg-eth0
-# fi
-
-# echo 8
-# if grep -q PEERDNS /etc/sysconfig/network-scripts/ifcfg-eth0; then
-# 	sed -i "s/PEERDNS=\"\?no\"\?/PEERDNS=yes/g" /etc/sysconfig/network-scripts/ifcfg-eth0
-# else
-# 	echo PEERDNS="yes" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-# fi
-
-# echo 9
-# if grep -q NM_CONTROLLED /etc/sysconfig/network-scripts/ifcfg-eth0; then
-# 	sed -i "s/NM_CONTROLLED=\"\?yes\"\?/NM_CONTROLLED=no/g" /etc/sysconfig/network-scripts/ifcfg-eth0
-# else
-# 	echo NM_CONTROLLED="no" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-# fi
-
-# echo 10
-# if grep -q DEFROUTE /etc/sysconfig/network-scripts/ifcfg-eth0; then
-# 	sed -i "s/DEFROUTE=\"\?no\"\?/DEFROUTE=yes/g" /etc/sysconfig/network-scripts/ifcfg-eth0
-# else
-# 	echo DEFROUTE="yes" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-# fi
-
-# echo 11
-# if grep -q ONBOOT /etc/sysconfig/network-scripts/ifcfg-eth0; then
-# 	sed -i "s/ONBOOT=\"\?no\"\?/ONBOOT=yes/g" /etc/sysconfig/network-scripts/ifcfg-eth0
-# else
-# 	echo ONBOOT="yes" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-# fi
-
-# echo 12
-# if grep -q DEVICE /etc/sysconfig/network-scripts/ifcfg-eth0; then
-# 	sed -i '/^DEVICE=/d' /etc/sysconfig/network-scripts/ifcfg-eth0
-# fi
-# echo DEVICE="eth0" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-
-# echo 13
-# if grep -q IPV6 /etc/sysconfig/network-scripts/ifcfg-eth0; then
-# 	sed -i '/^IPV6/d' /etc/sysconfig/network-scripts/ifcfg-eth0
-# fi
-
-# echo 14
-# if grep -q NETBOOT /etc/sysconfig/network-scripts/ifcfg-eth0; then
-# 	sed -i '/^NETBOOT=/d' /etc/sysconfig/network-scripts/ifcfg-eth0
-# fi
-
-# echo 15
-# if grep -q PEERROUTES /etc/sysconfig/network-scripts/ifcfg-eth0; then
-# 	sed -i '/^PEERROUTES=/d' /etc/sysconfig/network-scripts/ifcfg-eth0
-# fi
 
 echo 16
 if [[ $OS_VERSION =~ ^8 ]]; then
@@ -136,12 +61,6 @@ if [[ $OS_VERSION =~ ^8 ]]; then
 	echo "Finished ensuring selinux is set to permissive"
 fi
 if [[ $OS_VERSION =~ ^7 ]]; then
-	# systemctl stop NetworkManager.service
-	# systemctl disable NetworkManager.service
-	# systemctl enable --now network
-	# service network start
-	# chkconfig network on
-
 	echo "Ensuring selinux is set to permissive"
 	sed -i "s/SELINUX=enforcing/SELINUX=permissive/g" /etc/sysconfig/selinux
 	sed -i "s/SELINUX=enforcing/SELINUX=permissive/g" /etc/selinux/config
@@ -150,6 +69,9 @@ if [[ $OS_VERSION =~ ^7 ]]; then
 	CLOUD_INIT_VERSION=`rpm -q --queryformat "%{VERSION}" cloud-init`
 	if [[ $CLOUD_INIT_VERSION =~ ^18 ]]; then
 		cloud-init clean --logs
+		rm -rf /var/log/cloud
+		rm -rf /var/lib/cloud/*
+		systemctl enable cloud-final
 	else
 		rm -rf /var/log/cloud
 		rm -rf /var/lib/cloud/*
