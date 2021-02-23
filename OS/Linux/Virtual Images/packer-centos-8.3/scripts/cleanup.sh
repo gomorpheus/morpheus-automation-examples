@@ -90,7 +90,7 @@ if [[ $OS_VERSION =~ ^7 ]]; then
 fi
 
 echo 18.25
-if [ -f "/etc/redhat-release" ]; then
+if [ ! -f "/etc/centos-release" ]; then
 	subscription-manager unsubscribe --all
 	subscription-manager unregister
 	subscription-manager clean
