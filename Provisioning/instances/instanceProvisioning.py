@@ -74,8 +74,8 @@ if location == "csc" and public == "lan":
     print("CSC - LAN")
     if servertype == "app" and env == "production":
         print("CSC - LAN - App - Prod")
-        networkname="TDI-DC-C-App"
-        clusterName="Test, Development & Infrastructure Lab"
+        networkname="CSC-DC-C-App"
+        clusterName="Business Applications"
         gid=getGroupId()
         print("Group ID: " + str(gid))
         cid=getCloudId(gid)
