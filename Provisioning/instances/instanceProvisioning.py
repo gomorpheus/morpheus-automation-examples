@@ -1,4 +1,5 @@
 import requests
+import json
 
 # Input from the user form in service catalog.
 location=morpheus['customOptions']['location']
@@ -11,6 +12,7 @@ layoutId=morpheus['customOptions']['layoutId']
 
 # Concatenating vars to get the group name. The group name will be used to do an API call to search for the group and get the id
 group=str(location+"-"+public+"-"+servertype+"-"+env)
+print(group)
 
 # define vars for API
 host=morpheus['morpheus']['applianceHost']
@@ -19,10 +21,11 @@ headers = {"Content-Type":"application/json","Accept":"application/json","Author
 
 # Write a function to get the groupId
 def getGroupId():
-    apiUrl = 'https://%s/api/sites?phrase=%s' % (host, group)
+    apiUrl = 'https://%s/api/groups?phrase=%s' % (host, group)
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
-    groupId=r.groups[0]['id']
+    data = r.json()
+    groupId=data['groups'][0]['id']
     return groupId
 
 
@@ -31,7 +34,8 @@ def getCloudId(gid):
     apiUrl = 'https://%s/api/zones?groupId=%s' % (host, gid)
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
-    cloudId = r.zones[0]['id']
+    data = r.json()
+    cloudId = data['zones'][0]['id']
     return cloudId
 
 
@@ -40,7 +44,8 @@ def getNetworkId(nid,zid):
     apiUrl = 'https://%s/api/networks?phrase=%s&zoneId=%s' % (host, nid, zid)
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
-    networkid = r.networks[0]['id']
+    data = r.json()
+    networkid = data['networks'][0]['id']
     return networkid
 
 # Write a fuction to get the storageId. Not required for now as all the VM's are supposed to go to a specific Datastore
@@ -51,7 +56,8 @@ def getResourcePoolId(clustername,cloudId):
     apiUrl = 'https://%s/api/zones/%s/resource-pools?phrase=%s' % (host, cloudId, clustername)
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
-    rpid = r.resourcePools[0]['id']
+    data = r.json()
+    rpid = data['resourcePools'][0]['id']
     return rpid
 
 
