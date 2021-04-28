@@ -77,13 +77,13 @@ if location == "csc" and public == "lan":
         networkname="TDI-DC-C-App"
         clusterName="Test, Development & Infrastructure Lab"
         gid=getGroupId()
-        print("Group ID: " + gid)
+        print("Group ID: " + str(gid))
         cid=getCloudId(gid)
-        print("Cloud ID: " + cid)
+        print("Cloud ID: " + str(cid))
         nid=getNetworkId(networkname,cid)
-        print("Network ID: " + nid)
+        print("Network ID: " + str(nid))
         clid=getResourcePoolId(clusterName,cid)
-        print("Cluster ID: " + clid)
+        print("Cluster ID: " + str(clid))
         provision(cid,gid,nid,clid)
     elif servertype == "app" and env == "non-production":
         print("CSC - LAN - App - Non-Prod")
