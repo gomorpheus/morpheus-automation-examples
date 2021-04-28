@@ -6,8 +6,8 @@ public=morpheus['customOptions']['public']
 servertype=morpheus['customOptions']['servertype']
 env=str(morpheus['customOptions']['environment'])
 plan=str(morpheus['customOptions']['plan'])
-instanceTypeId=morpheus['customOptions']['instanceTypeId']
 layoutId=morpheus['customOptions']['layoutId']
+
 
 # Concatenating vars to get the group name. The group name will be used to do an API call to search for the group and get the id
 group=str(location+"-"+public+"-"+servertype+"-"+env+"-"+plan)
@@ -16,36 +16,82 @@ group=str(location+"-"+public+"-"+servertype+"-"+env+"-"+plan)
 host=morpheus['morpheus']['applianceHost']
 token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
-apiUrl = 'https://%s/api/sites?phrase=%s' % (host, group)
-url=str(apiUrl)
 
 # Write a function to get the groupId
+def getGroupId():
+    apiUrl = 'https://%s/api/sites?phrase=%s' % (host, group)
+    url=str(apiUrl)
+    r = requests.get(url, headers=headers, verify=False)
+    groupId=r.groups[0]['id']
+    return groupId
+
+
 # Write a function to get the cloudId
+def getCloudId(gid):
+    apiUrl = 'https://%s/api/zones?groupId=%s' % (host, gid)
+    url=str(apiUrl)
+    r = requests.get(url, headers=headers, verify=False)
+    cloudId = r.zones[0]['id']
+    return cloudId
+
+
 # Write a function to get the networkId
-# Write a fuction to get the storageId
-# Write a function to get the resourcePool / cluster ID
+def getNetworkId(nid,zid):
+    apiUrl = 'https://%s/api/networks?phrase=%s&zoneId=%s' % (host, nid, zid)
+    url=str(apiUrl)
+    r = requests.get(url, headers=headers, verify=False)
+    networkid = r.networks[0]['id']
+    return networkid
+
+# Write a fuction to get the storageId. Not required for now as all the VM's are supposed to go to a specific Datastore
+
+
+# Write a function to get the resourcePool / cluster ID. This would be based on the naming logic
+def getResourcePoolId(clustername,cloudId):
+    apiUrl = 'https://%s/api/zones/%s/resource-pools?phrase=%s' % (host, cloudId, clustername)
+    url=str(apiUrl)
+    r = requests.get(url, headers=headers, verify=False)
+    rpid = r.resourcePools[0]['id']
+    return rpid
+
 
 # # Write a function to provision the instance and call the function from the below conditions.
+def provision(zid,siteid,netid,clusterId):
+    #JSON body of the post for instance
+    jbody={"zoneId":zid,"instance":{"name":"test01","site":{"id":siteid},"type":"pbsServer","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":null}},"config":{"resourcePoolId":clusterId,"noAgent":null,"smbiosAssetTag":null,"nestedVirtualization":"off","hostId":null,"vmwareFolderId":null,"createUser":true},"volumes":[{"id":-1,"rootVolume":true,"name":"root","size":80,"sizeId":null,"storageType":2,"datastoreId":1387}],"networkInterfaces":[{"network":{"id":netid}}]}
+    body=json.dumps(jbody)
+    apiUrl = 'https://%s/api/instances' % (host)
+    url=str(apiUrl)
+    r = requests.post(url, headers=headers, data=body, verify=False)
 
-print(location)
-print(group )
 if location == "csc" and public == "lan":
     print("CSC - LAN")
-    if servertype == "app" and env == "4":
+    if servertype == "app" and env == "production":
         print("CSC - LAN - App - Prod")
-    elif servertype == "app" and env == "5":
+        networkname="TDI-DC-C-App"
+        clusterName="Test, Development & Infrastructure Lab"
+        gid=getGroupId()
+        print(gid)
+        cid=getCloudId(gid)
+        print(cid)
+        nid=getNetworkId(networkname,cid,clusterName)
+        print(nid)
+        clid=getResourcePoolId(clusterName,cid)
+        print(clid)
+        provision(cid,gid,nid,clid)
+    elif servertype == "app" and env == "non-production":
         print("CSC - LAN - App - Non-Prod")
-    elif servertype == "web" and env == "4":
+    elif servertype == "web" and env == "production":
         print("CSC - LAN - Web - Prod")
-    elif servertype == "web" and env == "5":
+    elif servertype == "web" and env == "non-production":
         print("CSC - LAN - Web - Non-Prod")
-    elif servertype == "db" and env == "4":
+    elif servertype == "db" and env == "production":
         print("CSC - LAN - DB - Prod")
-    elif servertype == "db" and env == "5":
+    elif servertype == "db" and env == "non-production":
         print("CSC - LAN - DB - Non-Prod")
-    elif servertype == "infra" and env == "4":
+    elif servertype == "infra" and env == "production":
         print("CSC - LAN - Infra - Prod")
-    elif servertype == "infra" and env == "5":
+    elif servertype == "infra" and env == "non-production":
         print("CSC - LAN - Infra - Non-Prod")
 elif location == "csc" and public == "dmz" and servertype == "app":
     print("CSC - DMZ - Prod - App and the network is CSC-DMZ-C-App")
