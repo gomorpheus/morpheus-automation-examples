@@ -10,7 +10,7 @@ layoutId=morpheus['customOptions']['layoutId']
 
 
 # Concatenating vars to get the group name. The group name will be used to do an API call to search for the group and get the id
-group=str(location+"-"+public+"-"+servertype+"-"+env+"-"+plan)
+group=str(location+"-"+public+"-"+servertype+"-"+env)
 
 # define vars for API
 host=morpheus['morpheus']['applianceHost']
