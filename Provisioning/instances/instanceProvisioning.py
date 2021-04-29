@@ -66,12 +66,15 @@ def getResourcePoolId(clustername,cloudId):
 # # Write a function to provision the instance and call the function from the below conditions.
 def provision(zid,siteid,netid,clusterId):
     #JSON body of the post for instance
+    print("Provisioning Instance......")
     jbody={"zoneId":zid,"instance":{"name":"test01","site":{"id":siteid},"type":"pbsServer","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":1387}],"networkInterfaces":[{"network":{"id":netid}}]}
     body=json.dumps(jbody)
     print(body)
     apiUrl = 'https://%s/api/instances' % (host)
     url=str(apiUrl)
     r = requests.post(url, headers=headers, data=body, verify=False)
+    data = r.json()
+    print(data)
 
 if location == "csc" and public == "lan":
     print("CSC - LAN")
