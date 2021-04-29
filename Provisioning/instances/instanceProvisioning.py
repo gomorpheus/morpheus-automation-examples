@@ -1,5 +1,7 @@
 import requests
 import json
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # Input from the user form in service catalog.
 location=morpheus['customOptions']['location']
