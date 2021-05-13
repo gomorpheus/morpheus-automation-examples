@@ -1,7 +1,7 @@
 import requests
 import json
-from morpheuscypher import Cypher
-c = Cypher(morpheus=morpheus)
+#from morpheuscypher import Cypher
+#c = Cypher(morpheus=morpheus)
 
 # Input from the user form in service catalog.
 location=morpheus['customOptions']['location']
@@ -68,9 +68,10 @@ def getResourcePoolId(clustername,cloudId):
 # Get DatatoreID
 def getDatastoreId(cloudId,datastoreName):
     apiUrl = 'https://%s/api/zones/%s/data-stores?name=%s' % (host, cloudId, datastoreName)
+    url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
-    dsid = data['datastore']['resourcePermission']['sites'][0]['id']
+    dsid = data['datastores'][0]['id']
     return int(dsid)
 
 
