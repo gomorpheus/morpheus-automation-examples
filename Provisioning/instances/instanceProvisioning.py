@@ -55,8 +55,10 @@ def getNetworkId(nid,zid):
 def getResourcePoolId(clustername,cloudId):
     apiUrl = 'https://%s/api/zones/%s/resource-pools?phrase=%s' % (host, cloudId, clustername)
     url=str(apiUrl)
+    print(url)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
+    print(data)
     rpid = data['resourcePools'][0]['id']
     return rpid
 
@@ -77,8 +79,8 @@ if location == "csc" and public == "lan":
     if servertype == "app" and env == "production":
         print("CSC-LAN-App-Prod")
         networkname="TDI-DC-C-App"
-        #clusterName="Test, Development & Infrastructure Lab"
-        clusterName="Demo-vSAN"
+        clusterName="Test, Development & Infrastructure Lab"
+        #clusterName="Demo-vSAN"
         gid=getGroupId()
         print(gid)
         cid=getCloudId(gid)
