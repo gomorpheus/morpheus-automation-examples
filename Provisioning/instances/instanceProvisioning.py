@@ -11,7 +11,6 @@ env=str(morpheus['customOptions']['environment'])
 plan=str(morpheus['customOptions']['plan'])
 layoutId=int(morpheus['customOptions']['layoutId'])
 cypass=str(c.get("secret/dbpass"))
-instanceName=morpheus['customOptions']['InstanceName']
 
 # Concatenating vars to get the group name. The group name will be used to do an API call to search for the group and get the id
 group=str(location+"-"+public+"-"+servertype+"-"+env)
