@@ -1,7 +1,5 @@
 import requests
 import json
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # Input from the user form in service catalog.
 location=morpheus['customOptions']['location']
@@ -66,31 +64,33 @@ def getResourcePoolId(clustername,cloudId):
 # # Write a function to provision the instance and call the function from the below conditions.
 def provision(zid,siteid,netid,clusterId):
     #JSON body of the post for instance
-    print("Provisioning Instance......")
-    jbody={"zoneId":zid,"instance":{"name":"test01","site":{"id":siteid},"type":"pbsServer","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":1387}],"networkInterfaces":[{"network":{"id":netid}}]}
+    jbody={"zoneId":zid,"instance":{"name":"test01","site":{"id":siteid},"type":"pbsServer","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":null}},"config":{"resourcePoolId":clusterId,"noAgent":null,"smbiosAssetTag":null,"nestedVirtualization":"off","hostId":null,"vmwareFolderId":null,"createUser":true},"volumes":[{"id":-1,"rootVolume":true,"name":"root","size":80,"sizeId":null,"storageType":2,"datastoreId":1387}],"networkInterfaces":[{"network":{"id":netid}}]}
+    #jbody={"zoneId":zid,"instance":{"name":"test02","site":{"id":siteid},"type":"centos","instanceContext":"dev","layout":{"id":402},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":"","vmwareFolderId":"group-v3557","createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":10,"sizeId":None,"storageType":1,"datastoreId":"auto"}],"networkInterfaces":[{"network":{"id":netid}}]}
     body=json.dumps(jbody)
     print(body)
     apiUrl = 'https://%s/api/instances' % (host)
     url=str(apiUrl)
     r = requests.post(url, headers=headers, data=body, verify=False)
-    data = r.json()
-    print(data)
 
 if location == "csc" and public == "lan":
-    print("CSC - LAN")
+    print("CSC-LAN")
     if servertype == "app" and env == "production":
-        print("CSC - LAN - App - Prod")
-        networkname="CSC-DC-C-App"
-        clusterName="Business Applications"
+        print("CSC-LAN-App-Prod")
+        networkname="TDI-DC-C-App"
+        #clusterName="Test, Development & Infrastructure Lab"
+        clusterName="Demo-vSAN"
         gid=getGroupId()
-        print("Group ID: " + str(gid))
+        print(gid)
         cid=getCloudId(gid)
-        print("Cloud ID: " + str(cid))
+        print(cid)
         nid=getNetworkId(networkname,cid)
-        print("Network ID: " + str(nid))
+        print(nid)
         clid=getResourcePoolId(clusterName,cid)
-        print("Cluster ID: " + str(clid))
+        print(clid)
         provision(cid,gid,nid,clid)
+        #Provisioning works
+        #Get the additional disks and build that up in the provision function
+        #Try with different layout of different instance type. Since the function is also requested then ask for the function type selection
     elif servertype == "app" and env == "non-production":
         print("CSC - LAN - App - Non-Prod")
     elif servertype == "web" and env == "production":
