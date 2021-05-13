@@ -62,6 +62,13 @@ def getResourcePoolId(clustername,cloudId):
     rpid = data['resourcePools'][0]['id']
     return rpid
 
+# Get DatatoreID
+def getDatastoreId(cloudId,datastoreName)
+    apiUrl = 'https://%s/api/zones/%s/data-stores?name=%s' % (host, cloudId, datastoreName)
+    r = requests.get(url, headers=headers, verify=False)
+    data = r.json()
+    dsid = data['datastore']['resourcePermission']['sites'][0]['id']
+    return dsid
 
 # # Write a function to provision the instance and call the function from the below conditions.
 def provision(zid,siteid,netid,clusterId):
@@ -78,8 +85,9 @@ if location == "csc" and public == "lan":
     print("CSC-LAN")
     if servertype == "app" and env == "production":
         print("CSC-LAN-App-Prod")
-        networkname="TDI-DC-C-App"
-        clusterName="Test, Development & Infrastructure Lab"
+        networkname="CSC-DC-C-App"
+        clusterName="Business Application"
+        datastorename=""
         #clusterName="Demo-vSAN"
         gid=getGroupId()
         print(gid)
@@ -89,12 +97,15 @@ if location == "csc" and public == "lan":
         print(nid)
         clid=getResourcePoolId(clusterName,cid)
         print(clid)
+        datastoreId=getDatastoreId(cid,)
         provision(cid,gid,nid,clid)
         #Provisioning works
         #Get the additional disks and build that up in the provision function
         #Try with different layout of different instance type. Since the function is also requested then ask for the function type selection
     elif servertype == "app" and env == "non-production":
         print("CSC - LAN - App - Non-Prod")
+        networkname="TDI-DC-C-App"
+        clusterName="Test, Development & Infrastructure Lab"
     elif servertype == "web" and env == "production":
         print("CSC - LAN - Web - Prod")
     elif servertype == "web" and env == "non-production":
