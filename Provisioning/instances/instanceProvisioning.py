@@ -66,7 +66,7 @@ def getResourcePoolId(clustername,cloudId):
     return rpid
 
 # Get DatatoreID
-def getDatastoreId(cloudId,datastoreName)
+def getDatastoreId(cloudId,datastoreName):
     apiUrl = 'https://%s/api/zones/%s/data-stores?name=%s' % (host, cloudId, datastoreName)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
