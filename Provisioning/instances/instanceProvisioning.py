@@ -10,7 +10,8 @@ servertype=morpheus['customOptions']['servertype']
 env=str(morpheus['customOptions']['environment'])
 plan=str(morpheus['customOptions']['plan'])
 layoutId=int(morpheus['customOptions']['layoutId'])
-cypass=str(c.get("secret/dbpass"))
+#cypass=str(c.get("secret/dbpass"))
+
 
 # Concatenating vars to get the group name. The group name will be used to do an API call to search for the group and get the id
 group=str(location+"-"+public+"-"+servertype+"-"+env)
@@ -90,18 +91,18 @@ def updateDB():
     host="127.0.0.1",
     user="morpheus",
     #get password from cypher
-    password=cypass,
+#    password=cypass,
     database="morpheus"
     )
 
     mycursor = mydb.cursor()
 
-    sql = "INSERT INTO catalog_item (date_created, ref_name, last_updated, owner_id, order_date, ref_type, ref_id, quantity, type_id, created_by, status, hidden) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    val = (getdate, instancename, getdate, 1, getdate, "instance", instanceId,1, 34, createdById, "ORDERED", 1)
-    mycursor.execute(sql, val)
-    mydb.commit()
+#    sql = "INSERT INTO catalog_item (date_created, ref_name, last_updated, owner_id, order_date, ref_type, ref_id, quantity, type_id, created_by, status, hidden) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+#    val = (getdate, instancename, getdate, 1, getdate, "instance", instanceId,1, 34, createdById, "ORDERED", 1)
+#    mycursor.execute(sql, val)
+#    mydb.commit()
 
-    print(mycursor.rowcount, "record inserted.")
+#    print(mycursor.rowcount, "record inserted.")
 
 if location == "csc" and public == "lan":
     print("CSC-LAN")
