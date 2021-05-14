@@ -2,7 +2,6 @@ import requests
 import json
 
 location=morpheus['customOptions']['location']
-#public=morpheus['customOptions']['public']
 servertype=morpheus['customOptions']['servertype']
 
 host=morpheus['morpheus']['applianceHost']
@@ -10,33 +9,21 @@ token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
 
 def getInstanceName():
-    x=1
-    generatedName = str(location+"-"+servertype+"-"+"0"+str(x))
-    print(generatedName)
-    apiUrl = 'https://%s/api/instances?phrase=%s' % (host, generatedName)
+    searchName = str(location+"-"+servertype+"-"+"0")
+    apiUrl = 'https://%s/api/instances?phrase=%s' % (host, searchName)
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
-    print(data)
-    instances = data['instances']
-    print(instances)
-    for i in range(len(instances)):
-        print(instances[i]['name'])
-        name=instances[i]['name']
-        if name == generatedName:
-            for y in range(1,10):
-                y=y+x
-                print(y)
-                generatedName = str(location+"-"+servertype+"-"+"0"+str(y))
-                print(name)
-                print(generatedName)
-                if name == generatedName:
-                    print ("Server "+name+" exists..")
-                    return generatedName
-                    print(generatedName)
-                    
-                print("Exiting..")
-                quit()
+    l = len(data['instances'])
+    print("Lenth of the array is "+ str(l))
+    if l is None:
+        print("Next availale server name is "+ searchName+"1")
+        availableName = searchName+"1"
+    else:
+        l=l+1
+        availableName=searchName+str(l)
+        print("Next availale server name is " + availableName)
+        return availableName
 
 instanceName=getInstanceName()
-print(instanceName)              
+print("Instance name is "+instanceName)              
