@@ -22,6 +22,23 @@ host=morpheus['morpheus']['applianceHost']
 token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
 
+def getInstanceName():
+    searchName = str(location+"-"+servertype+"-"+"0")
+    apiUrl = 'https://%s/api/instances?phrase=%s' % (host, searchName)
+    url=str(apiUrl)
+    r = requests.get(url, headers=headers, verify=False)
+    data = r.json()
+    l = len(data['instances'])
+    print("Lenth of the array is "+ str(l))
+    if l is None:
+        print("Next availale server name is "+ searchName+"1")
+        availableName = searchName+"1"
+    else:
+        l=l+1
+        availableName=searchName+str(l)
+        print("Next availale server name is " + availableName)
+        return availableName
+
 # Write a function to get the groupId
 def getGroupId():
     apiUrl = 'https://%s/api/groups?phrase=%s' % (host, group)
@@ -71,14 +88,15 @@ def getDatastoreId(cloudId,datastoreName):
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
+    print(data)
     dsid = data['datastores'][0]['id']
     return int(dsid)
 
 
 # # Write a function to provision the instance and call the function from the below conditions.
-def provision(zid,siteid,netid,clusterId,dsId):
+def provision(zid,siteid,netid,clusterId,dsId,iname):
     #JSON body of the post for instance
-    jbody={"zoneId":zid,"instance":{"name":"test01","site":{"id":siteid},"type":"win-server","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
+    jbody={"zoneId":zid,"instance":{"name":iname,"site":{"id":siteid},"type":"win-server","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
     #jbody={"zoneId":zid,"instance":{"name":"test02","site":{"id":siteid},"type":"centos","instanceContext":"dev","layout":{"id":402},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":"","vmwareFolderId":"group-v3557","createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":10,"sizeId":None,"storageType":1,"datastoreId":"auto"}],"networkInterfaces":[{"network":{"id":netid}}]}
     body=json.dumps(jbody)
     print(body)
@@ -121,8 +139,10 @@ if location == "csc" and public == "lan":
         #print(nid)
         clid=getResourcePoolId(clusterName,cid)
         #print(clid)
-        datastoreId=getDatastoreId(cid,datastorename)       
-        provision(cid,gid,nid,clid,datastoreId)
+        datastoreId=getDatastoreId(cid,datastorename)
+        instanceName=getInstanceName()       
+        provision(cid,gid,nid,clid,datastoreId,instanceName)
+        quit()
         #Provisioning works
         #Get the additional disks and build that up in the provision function
         #Try with different layout of different instance type. Since the function is also requested then ask for the function type selection
@@ -130,79 +150,86 @@ if location == "csc" and public == "lan":
         print("CSC - LAN - App - Non-Prod")
         networkname="vxw-dvs-8425-virtualwire-127-sid-8101-TDI-DC-C-APP"
         clusterName="Test, Development & Infrastructure Lab"
-		datastorename="FA-VVOL-TDI"
+        datastorename="FA-VVOL-TDI"
         gid=getGroupId()
         cid=getCloudId(gid)
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
-        datastoreId=getDatastoreId(cid,datastorename)       
-        provision(cid,gid,nid,clid,datastoreId)
+        datastoreId=getDatastoreId(cid,datastorename)
+        instanceName=getInstanceName()      
+        provision(cid,gid,nid,clid,datastoreId,instanceName)
     elif servertype == "web" and env == "production":
         print("CSC - LAN - Web - Prod")
         networkname="vxw-dvs-555-virtualwire-108-sid-8069-CSC-DC-C-WEB"
         clusterName="Business Applications"
-		datastorename="FA-VVOL-BA"
+        datastorename="FA-VVOL-BA"
         gid=getGroupId()
         cid=getCloudId(gid)
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
-        datastoreId=getDatastoreId(cid,datastorename)       
-        provision(cid,gid,nid,clid,datastoreId)        
+        datastoreId=getDatastoreId(cid,datastorename)
+        instanceName=getInstanceName()      
+        provision(cid,gid,nid,clid,datastoreId,instanceName)        
     elif servertype == "web" and env == "non-production":
         print("CSC - LAN - Web - Non-Prod")
         networkname="vxw-dvs-8425-virtualwire-124-sid-8047-TDI-DC-C-WEB"
         clusterName="Test, Development & Infrastructure Lab"
-		datastorename="FA-VVOL-TDI"
+        datastorename="FA-VVOL-TDI"
         gid=getGroupId()
         cid=getCloudId(gid)
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
-        datastoreId=getDatastoreId(cid,datastorename)       
-        provision(cid,gid,nid,clid,datastoreId)          
+        datastoreId=getDatastoreId(cid,datastorename)
+        instanceName=getInstanceName()      
+        provision(cid,gid,nid,clid,datastoreId,instanceName)          
     elif servertype == "db" and env == "production":
         print("CSC - LAN - DB - Prod")
         networkname="vxw-dvs-555-virtualwire-110-sid-8079-CSC-DC-C-DB"
         clusterName="Business Applications"
-		datastorename="FA-VVOL-BA"
+        datastorename="FA-VVOL-BA"
         gid=getGroupId()
         cid=getCloudId(gid)
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
-        datastoreId=getDatastoreId(cid,datastorename)       
-        provision(cid,gid,nid,clid,datastoreId)        
+        datastoreId=getDatastoreId(cid,datastorename)
+        instanceName=getInstanceName()       
+        provision(cid,gid,nid,clid,datastoreId,instanceName)        
     elif servertype == "db" and env == "non-production":
         print("CSC - LAN - DB - Non-Prod")
         networkname="vxw-dvs-8425-virtualwire-128-sid-8102-TDI-DC-C-DB"
         clusterName="Test, Development & Infrastructure Lab"
-		datastorename="FA-VVOL-TDI"
+        datastorename="FA-VVOL-TDI"
         gid=getGroupId()
         cid=getCloudId(gid)
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
-        datastoreId=getDatastoreId(cid,datastorename)       
-        provision(cid,gid,nid,clid,datastoreId)        
+        datastoreId=getDatastoreId(cid,datastorename)
+        instanceName=getInstanceName()       
+        provision(cid,gid,nid,clid,datastoreId,instanceName)        
     elif servertype == "infra" and env == "production":
         print("CSC - LAN - Infra - Prod")
         networkname="vxw-dvs-555-virtualwire-43-sid-8037-CSC-DC-INFRASTRUCTURE"
         clusterName="Business Applications"
-		datastorename="FA-VVOL-BA"
+        datastorename="FA-VVOL-BA"
         gid=getGroupId()
         cid=getCloudId(gid)
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
-        datastoreId=getDatastoreId(cid,datastorename)       
-        provision(cid,gid,nid,clid,datastoreId) 
+        datastoreId=getDatastoreId(cid,datastorename)
+        instanceName=getInstanceName()       
+        provision(cid,gid,nid,clid,datastoreId,instanceName) 
     elif servertype == "infra" and env == "non-production":
         print("CSC - LAN - Infra - Non-Prod")
         networkname="vxw-dvs-8425-virtualwire-11-sid-8010-TDI-INFRA-01"
         clusterName="Test, Development & Infrastructure Lab"
-		datastorename="FA-VVOL-TDI"
+        datastorename="FA-VVOL-TDI"
         gid=getGroupId()
         cid=getCloudId(gid)
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
-        datastoreId=getDatastoreId(cid,datastorename)       
-        provision(cid,gid,nid,clid,datastoreId)        
+        datastoreId=getDatastoreId(cid,datastorename)
+        instanceName=getInstanceName()       
+        provision(cid,gid,nid,clid,datastoreId,instanceName)        
         
 elif location == "csc" and public == "dmz" and servertype == "app":
     print("CSC - DMZ - Prod - App and the network is CSC-DMZ-C-App")
