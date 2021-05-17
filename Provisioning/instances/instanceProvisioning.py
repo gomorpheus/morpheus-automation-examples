@@ -10,6 +10,7 @@ servertype=morpheus['customOptions']['servertype']
 env=str(morpheus['customOptions']['environment'])
 plan=str(morpheus['customOptions']['plan'])
 layoutId=int(morpheus['customOptions']['layoutId'])
+userInstanceName=str(morpheus['customOptions']['InstanceName'])
 #cypass=str(c.get("secret/dbpass"))
 
 
@@ -23,7 +24,11 @@ token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
 
 def getInstanceName():
-    searchName = str(location+"-"+servertype+"-"+"0")
+#   searchName = str(location+"-"+servertype+"-"+"0")
+    uINameStripped = userInstanceName[0:3]
+    print(uINameStripped)
+    searchName = str(location+"-"+servertype+"-"+uINameStripped+"-"+"0")
+    print(searchName)
     apiUrl = 'https://%s/api/instances?phrase=%s' % (host, searchName)
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
@@ -96,6 +101,7 @@ def getDatastoreId(cloudId,datastoreName):
 # # Write a function to provision the instance and call the function from the below conditions.
 def provision(zid,siteid,netid,clusterId,dsId,iname):
     #JSON body of the post for instance
+    ##jbody={"zoneId":zid,"instance":{"name":"test02","site":{"id":siteid},"type":"win-server","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
     jbody={"zoneId":zid,"instance":{"name":iname,"site":{"id":siteid},"type":"win-server","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
     #jbody={"zoneId":zid,"instance":{"name":"test02","site":{"id":siteid},"type":"centos","instanceContext":"dev","layout":{"id":402},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":"","vmwareFolderId":"group-v3557","createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":10,"sizeId":None,"storageType":1,"datastoreId":"auto"}],"networkInterfaces":[{"network":{"id":netid}}]}
     body=json.dumps(jbody)
@@ -127,10 +133,13 @@ if location == "csc" and public == "lan":
     print("CSC-LAN")
     if servertype == "app" and env == "production":
         print("CSC-LAN-App-Prod")
-        networkname="vxw-dvs-555-virtualwire-109-sid-8074-CSC-DC-C-APP"
-        clusterName="Business Applications"
-        datastorename="FA-VVOL-BA"
+        #networkname="vxw-dvs-555-virtualwire-109-sid-8074-CSC-DC-C-APP"
+        #clusterName="Business Applications"
+        #datastorename="FA-VVOL-BA"
         #clusterName="Demo-vSAN"
+        networkname="TDI-DC-C-App"
+        clusterName="Demo-vSAN"
+        datastorename="vsanDatastore"
         gid=getGroupId()
         #print(gid)
         cid=getCloudId(gid)
@@ -140,7 +149,7 @@ if location == "csc" and public == "lan":
         clid=getResourcePoolId(clusterName,cid)
         #print(clid)
         datastoreId=getDatastoreId(cid,datastorename)
-        instanceName=getInstanceName()       
+        instanceName=str(getInstanceName())
         provision(cid,gid,nid,clid,datastoreId,instanceName)
         quit()
         #Provisioning works
