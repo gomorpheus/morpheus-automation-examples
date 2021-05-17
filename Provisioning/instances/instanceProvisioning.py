@@ -165,6 +165,7 @@ if location == "csc" and public == "lan":
         insId=provision(cid,gid,nid,clid,datastoreId,instanceName)
         currentDate=getDate()
         cbId=getCreatedById(insId)
+        sleep(20)
         updateDB(instanceName,currentDate,insId,cbId)
         quit()
         #Provisioning works
