@@ -1,5 +1,9 @@
 import requests
 import json
+import time
+import sys
+from urlparse import urlparse
+import mysql.connector
 from morpheuscypher import Cypher
 from datetime import datetime
 c = Cypher(morpheus=morpheus)
@@ -17,7 +21,6 @@ cypass=str(c.get("secret/dbpass"))
 
 # Concatenating vars to get the group name. The group name will be used to do an API call to search for the group and get the id
 group=str(location+"-"+public+"-"+servertype+"-"+env)
-print(group)
 
 # define vars for API
 host=morpheus['morpheus']['applianceHost']
@@ -26,15 +29,13 @@ headers = {"Content-Type":"application/json","Accept":"application/json","Author
 
 def getInstanceName():
     uINameStripped = userInstanceName[0:3]
-    print(uINameStripped)
     searchName = str(location+"-"+servertype+"-"+uINameStripped+"-"+"0")
-    print(searchName)
     apiUrl = 'https://%s/api/instances?phrase=%s' % (host, searchName)
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
     l = len(data['instances'])
-    print("Lenth of the array is "+ str(l))
+   
     if l is None:
         print("Next availale server name is "+ searchName+"1")
         availableName = searchName+"1"
@@ -77,10 +78,8 @@ def getNetworkId(nid,zid):
 def getResourcePoolId(clustername,cloudId):
     apiUrl = 'https://%s/api/zones/%s/resource-pools?phrase=%s' % (host, cloudId, clustername)
     url=str(apiUrl)
-    print(url)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
-    print(data)
     rpid = data['resourcePools'][0]['id']
     return rpid
 
@@ -90,7 +89,6 @@ def getDatastoreId(cloudId,datastoreName):
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
-    print(data)
     dsid = data['datastores'][0]['id']
     return int(dsid)
 
@@ -104,15 +102,17 @@ def getDate():
 def provision(zid,siteid,netid,clusterId,dsId,iname):
     #JSON body of the post for instance
     ##jbody={"zoneId":zid,"instance":{"name":"test02","site":{"id":siteid},"type":"win-server","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
-    jbody={"zoneId":zid,"instance":{"name":iname,"site":{"id":siteid},"type":"win-server","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
+    jbody={"zoneId":zid,"instance":{"name":iname,"site":{"id":siteid},"type":"customcentos","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
     #jbody={"zoneId":zid,"instance":{"name":"test02","site":{"id":siteid},"type":"centos","instanceContext":"dev","layout":{"id":402},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":"","vmwareFolderId":"group-v3557","createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":10,"sizeId":None,"storageType":1,"datastoreId":"auto"}],"networkInterfaces":[{"network":{"id":netid}}]}
     body=json.dumps(jbody)
-    print(body)
     apiUrl = 'https://%s/api/instances' % (host)
     url=str(apiUrl)
     r = requests.post(url, headers=headers, data=body, verify=False)
     data = r.json()
-    instanceId = instance['id']
+    print("Response from provisioning API: ")
+    print(data)
+    instanceId = data['instance']['id']
+    print("Instance Id: "+ str(instanceId))
     return instanceId
 
 # Get Instance created by Id
@@ -135,42 +135,32 @@ def updateDB(iname,getdate,instanceId,createdById):
     mycursor = mydb.cursor()
 
     sql = "INSERT INTO catalog_item (date_created, ref_name, last_updated, owner_id, order_date, ref_type, ref_id, quantity, type_id, created_by, status, hidden) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    val = (getdate, iname, getdate, 1, getdate, "instance", instanceId,1, 34, createdById, "ORDERED", 1)
+    val = (getdate, iname, getdate, 1, getdate, "instance", instanceId,1, 34, createdById, "ORDERED", 0)
     mycursor.execute(sql, val)
     mydb.commit()
 
-    print(mycursor.rowcount, "record inserted.")
+    #print(mycursor.rowcount, "record inserted.")
 
 if location == "csc" and public == "lan":
     print("CSC-LAN")
     if servertype == "app" and env == "production":
         print("CSC-LAN-App-Prod")
-        #networkname="vxw-dvs-555-virtualwire-109-sid-8074-CSC-DC-C-APP"
-        #clusterName="Business Applications"
-        #datastorename="FA-VVOL-BA"
-        #clusterName="Demo-vSAN"
-        networkname="TDI-DC-C-App"
-        clusterName="Demo-vSAN"
-        datastorename="vsanDatastore"
+        networkname="vxw-dvs-555-virtualwire-109-sid-8074-CSC-DC-C-APP"
+        clusterName="Business Applications"
+        datastorename="FA-VVOL-BA"
         gid=getGroupId()
-        #print(gid)
         cid=getCloudId(gid)
-        #print(cid)
         nid=getNetworkId(networkname,cid)
-        #print(nid)
         clid=getResourcePoolId(clusterName,cid)
-        #print(clid)
         datastoreId=getDatastoreId(cid,datastorename)
         instanceName=str(getInstanceName())
         insId=provision(cid,gid,nid,clid,datastoreId,instanceName)
         currentDate=getDate()
         cbId=getCreatedById(insId)
-        sleep(20)
+        time.sleep(10)
         updateDB(instanceName,currentDate,insId,cbId)
         quit()
-        #Provisioning works
-        #Get the additional disks and build that up in the provision function
-        #Try with different layout of different instance type. Since the function is also requested then ask for the function type selection
+        
     elif servertype == "app" and env == "non-production":
         print("CSC - LAN - App - Non-Prod")
         networkname="vxw-dvs-8425-virtualwire-127-sid-8101-TDI-DC-C-APP"
@@ -181,8 +171,13 @@ if location == "csc" and public == "lan":
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
         datastoreId=getDatastoreId(cid,datastorename)
-        instanceName=getInstanceName()      
-        provision(cid,gid,nid,clid,datastoreId,instanceName)
+        instanceName=str(getInstanceName())
+        insId=provision(cid,gid,nid,clid,datastoreId,instanceName)
+        currentDate=getDate()
+        cbId=getCreatedById(insId)
+        time.sleep(10)
+        updateDB(instanceName,currentDate,insId,cbId)
+        quit()
     elif servertype == "web" and env == "production":
         print("CSC - LAN - Web - Prod")
         networkname="vxw-dvs-555-virtualwire-108-sid-8069-CSC-DC-C-WEB"
@@ -193,8 +188,13 @@ if location == "csc" and public == "lan":
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
         datastoreId=getDatastoreId(cid,datastorename)
-        instanceName=getInstanceName()      
-        provision(cid,gid,nid,clid,datastoreId,instanceName)        
+        instanceName=str(getInstanceName())
+        insId=provision(cid,gid,nid,clid,datastoreId,instanceName)
+        currentDate=getDate()
+        cbId=getCreatedById(insId)
+        time.sleep(10)
+        updateDB(instanceName,currentDate,insId,cbId)
+        quit()        
     elif servertype == "web" and env == "non-production":
         print("CSC - LAN - Web - Non-Prod")
         networkname="vxw-dvs-8425-virtualwire-124-sid-8047-TDI-DC-C-WEB"
@@ -205,8 +205,13 @@ if location == "csc" and public == "lan":
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
         datastoreId=getDatastoreId(cid,datastorename)
-        instanceName=getInstanceName()      
-        provision(cid,gid,nid,clid,datastoreId,instanceName)          
+        instanceName=str(getInstanceName())
+        insId=provision(cid,gid,nid,clid,datastoreId,instanceName)
+        currentDate=getDate()
+        cbId=getCreatedById(insId)
+        time.sleep(10)
+        updateDB(instanceName,currentDate,insId,cbId)
+        quit()          
     elif servertype == "db" and env == "production":
         print("CSC - LAN - DB - Prod")
         networkname="vxw-dvs-555-virtualwire-110-sid-8079-CSC-DC-C-DB"
@@ -217,8 +222,13 @@ if location == "csc" and public == "lan":
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
         datastoreId=getDatastoreId(cid,datastorename)
-        instanceName=getInstanceName()       
-        provision(cid,gid,nid,clid,datastoreId,instanceName)        
+        instanceName=str(getInstanceName())
+        insId=provision(cid,gid,nid,clid,datastoreId,instanceName)
+        currentDate=getDate()
+        cbId=getCreatedById(insId)
+        time.sleep(10)
+        updateDB(instanceName,currentDate,insId,cbId)
+        quit()        
     elif servertype == "db" and env == "non-production":
         print("CSC - LAN - DB - Non-Prod")
         networkname="vxw-dvs-8425-virtualwire-128-sid-8102-TDI-DC-C-DB"
@@ -229,8 +239,13 @@ if location == "csc" and public == "lan":
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
         datastoreId=getDatastoreId(cid,datastorename)
-        instanceName=getInstanceName()       
-        provision(cid,gid,nid,clid,datastoreId,instanceName)        
+        instanceName=str(getInstanceName())
+        insId=provision(cid,gid,nid,clid,datastoreId,instanceName)
+        currentDate=getDate()
+        cbId=getCreatedById(insId)
+        time.sleep(10)
+        updateDB(instanceName,currentDate,insId,cbId)
+        quit()        
     elif servertype == "infra" and env == "production":
         print("CSC - LAN - Infra - Prod")
         networkname="vxw-dvs-555-virtualwire-43-sid-8037-CSC-DC-INFRASTRUCTURE"
@@ -241,8 +256,13 @@ if location == "csc" and public == "lan":
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
         datastoreId=getDatastoreId(cid,datastorename)
-        instanceName=getInstanceName()       
-        provision(cid,gid,nid,clid,datastoreId,instanceName) 
+        instanceName=str(getInstanceName())
+        insId=provision(cid,gid,nid,clid,datastoreId,instanceName)
+        currentDate=getDate()
+        cbId=getCreatedById(insId)
+        time.sleep(10)
+        updateDB(instanceName,currentDate,insId,cbId)
+        quit() 
     elif servertype == "infra" and env == "non-production":
         print("CSC - LAN - Infra - Non-Prod")
         networkname="vxw-dvs-8425-virtualwire-11-sid-8010-TDI-INFRA-01"
@@ -253,8 +273,13 @@ if location == "csc" and public == "lan":
         nid=getNetworkId(networkname,cid)
         clid=getResourcePoolId(clusterName,cid)
         datastoreId=getDatastoreId(cid,datastorename)
-        instanceName=getInstanceName()       
-        provision(cid,gid,nid,clid,datastoreId,instanceName)        
+        instanceName=str(getInstanceName())
+        insId=provision(cid,gid,nid,clid,datastoreId,instanceName)
+        currentDate=getDate()
+        cbId=getCreatedById(insId)
+        time.sleep(10)
+        updateDB(instanceName,currentDate,insId,cbId)
+        quit()        
         
 elif location == "csc" and public == "dmz" and servertype == "app":
     print("CSC - DMZ - Prod - App and the network is CSC-DMZ-C-App")
