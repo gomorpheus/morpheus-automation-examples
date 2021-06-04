@@ -49,6 +49,47 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "New Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"console.log(json)\r",
+									"var id = json.data[0].value\r",
+									"console.log(\"ID is:\" + id)\r",
+									"pm.collectionVariables.set(\"code_repo_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{morph_api}}/api/options/codeRepositories?integrationId={{integration_id}}",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"options",
+								"codeRepositories"
+							],
+							"query": [
+								{
+									"key": "integrationId",
+									"value": "{{integration_id}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -79,7 +120,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Provider Role Assume\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/provider.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{integration_id}}\r\n                }\r\n    }\r\n  }\r\n}",
+									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Provider Role Assume\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/provider.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{code_repo_id}}\r\n                }\r\n    }\r\n  }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -122,7 +163,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Subnet by Count\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/subnet_by_count.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{integration_id}}\r\n                }\r\n    }\r\n  }\r\n}",
+									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Subnet by Count\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/subnet_by_count.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{code_repo_id}}\r\n                }\r\n    }\r\n  }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -165,7 +206,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Default Vars\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/default_vars.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{integration_id}}\r\n                }\r\n    }\r\n  }\r\n}",
+									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Default Vars\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/default_vars.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{code_repo_id}}\r\n                }\r\n    }\r\n  }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -208,7 +249,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Locals\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/locals.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{integration_id}}\r\n                }\r\n    }\r\n  }\r\n}",
+									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Locals\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/locals.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{code_repo_id}}\r\n                }\r\n    }\r\n  }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -251,7 +292,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS VPC\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/vpc.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{integration_id}}\r\n                }\r\n    }\r\n  }\r\n}",
+									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS VPC\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/vpc.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{code_repo_id}}\r\n                }\r\n    }\r\n  }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -776,6 +817,66 @@
 		},
 		{
 			"key": "morph_bearer",
+			"value": ""
+		},
+		{
+			"key": "integration_id",
+			"value": ""
+		},
+		{
+			"key": "code_repo_id",
+			"value": ""
+		},
+		{
+			"key": "aws_provider_spec_template_id",
+			"value": ""
+		},
+		{
+			"key": "aws_subnet_by_count_spec_template_id",
+			"value": ""
+		},
+		{
+			"key": "aws_default_vars_spec_template_id",
+			"value": ""
+		},
+		{
+			"key": "aws_locals_spec_template_id",
+			"value": ""
+		},
+		{
+			"key": "aws_vpc_spec_template_id",
+			"value": ""
+		},
+		{
+			"key": "aws_account_number_option_list_id",
+			"value": ""
+		},
+		{
+			"key": "subnet_cidr_option_list_id",
+			"value": ""
+		},
+		{
+			"key": "aws_regions_option_list_id",
+			"value": ""
+		},
+		{
+			"key": "aws_account_number_option_type_id",
+			"value": ""
+		},
+		{
+			"key": "aws_region_option_type_id",
+			"value": ""
+		},
+		{
+			"key": "subnet_cidr_option_type_id",
+			"value": ""
+		},
+		{
+			"key": "subnet_count_option_type_id",
+			"value": ""
+		},
+		{
+			"key": "instance_type_id",
 			"value": ""
 		}
 	]
