@@ -330,7 +330,7 @@
 					"response": []
 				},
 				{
-					"name": "Create AWS Regions Option List",
+					"name": "Create Subnet CIDR Option List",
 					"event": [
 						{
 							"listen": "test",
@@ -339,7 +339,7 @@
 									"var json = JSON.parse(responseBody);\r",
 									"var id = json.optionTypeList.id\r",
 									"console.log(json.optionTypeList.id)\r",
-									"pm.collectionVariables.set(\"aws_regions_option_list_id\", id);"
+									"pm.collectionVariables.set(\"subnet_cidr_option_list_id\", id);"
 								],
 								"type": "text/javascript"
 							}
@@ -379,7 +379,7 @@
 					"response": []
 				},
 				{
-					"name": "Create Subnet CIDR Option List",
+					"name": "Create AWS Region Option List",
 					"event": [
 						{
 							"listen": "test",
@@ -388,7 +388,7 @@
 									"var json = JSON.parse(responseBody);\r",
 									"var id = json.optionTypeList.id\r",
 									"console.log(json.optionTypeList.id)\r",
-									"pm.collectionVariables.set(\"subnet_cidr_option_list_id\", id);"
+									"pm.collectionVariables.set(\"aws_regions_option_list_id\", id);"
 								],
 								"type": "text/javascript"
 							}
@@ -557,7 +557,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"CIDR Mask\",\r\n       \"description\": \"Selection of CIDR mask\",\r\n       \"fieldName\": \"cidrMask\",\r\n       \"type\": \"select\",\r\n       \"fieldLabel\": \"Select CIDR mask\",\r\n       \"helpBlock\": \"Pick your desired CIDR for your subnets\",\r\n       \"required\": true,\r\n       \"exportMeta\": true,\r\n       \"optionList\": {\r\n           \"id\": \"{{subnet_cidr_option_list_id}}\"\r\n       }\r\n     }}",
+							"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"CIDR Mask\",\r\n       \"description\": \"Selection of CIDR mask\",\r\n       \"fieldName\": \"cidrMask\",\r\n       \"type\": \"select\",\r\n       \"fieldLabel\": \"Select CIDR mask\",\r\n       \"helpBlock\": \"Pick your desired CIDR for your subnets\",\r\n       \"required\": true,\r\n       \"exportMeta\": true,\r\n       \"optionList\": {\r\n           \"id\": \"{{subnet_cidr_option_list_id}}\"\r\n       }\r\n     }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -606,7 +606,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"Subnet Count\",\r\n       \"description\": \"Count of subnets to create\",\r\n       \"fieldName\": \"subnetCount\",\r\n       \"type\": \"text\",\r\n       \"fieldLabel\": \"How many subnets?\",\r\n       \"helpBlock\": \"Select subnet count\",\r\n       \"required\": true\r\n     }}",
+							"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"Subnet Count\",\r\n       \"description\": \"Count of subnets to create\",\r\n       \"fieldName\": \"subnetCount\",\r\n       \"type\": \"text\",\r\n       \"fieldLabel\": \"How many subnets?\",\r\n       \"helpBlock\": \"Select subnet count\",\r\n       \"required\": true\r\n     }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -706,7 +706,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"instanceTypeLayout\": {\r\n    \"name\": \"AWS Cloud Resources\",\r\n    \"instanceVersion\": \"1.1\",\r\n    \"description\": \"Deploy a VPC and subnets in AWS \",\r\n    \"creatable\": true,\r\n    \"memoryRequirement\": 0,\r\n    \"sortOrder\": 0,\r\n    \"supportsConvertToManaged\": false,\r\n    \"provisionTypeCode\": \"terraform\",\r\n    \"optionTypes\": [\r\n        {{aws_region_option_type_id}},\r\n        {{aws_account_number_option_type_id}},\r\n        {{subnet_cidr_option_type_id}},\r\n        {{subnet_count_option_type_id}}\r\n    ],\r\n    \"specTemplates\": [\r\n        {{aws_provider_spec_template_id}},\r\n        {{aws_vpc_spec_template_id}},\r\n        {{aws_vpc_spec_template_id}},\r\n        {{aws_subnet_by_count_spec_template_id}},\r\n        {{aws_locals_spec_template_id}}\r\n    ],\r\n    \"permissions\": {\r\n      \"resourcePermissions\": {\r\n        \"all\":true\r\n      }\r\n    }\r\n    }\r\n}",
+							"raw": "{\r\n  \"instanceTypeLayout\": {\r\n    \"name\": \"AWS Cloud Resources\",\r\n    \"instanceVersion\": \"1.1\",\r\n    \"description\": \"Deploy a VPC and subnets in AWS \",\r\n    \"creatable\": true,\r\n    \"memoryRequirement\": 0,\r\n    \"sortOrder\": 0,\r\n    \"supportsConvertToManaged\": false,\r\n    \"provisionTypeCode\": \"terraform\",\r\n    \"optionTypes\": [\r\n        {{aws_region_option_type_id}},\r\n        {{aws_account_number_option_type_id}},\r\n        {{subnet_cidr_option_type_id}},\r\n        {{subnet_count_option_type_id}}\r\n    ],\r\n    \"specTemplates\": [\r\n        {{aws_provider_spec_template_id}},\r\n        {{aws_vpc_spec_template_id}},\r\n        {{aws_default_vars_spec_template_id}},\r\n        {{aws_subnet_by_count_spec_template_id}},\r\n        {{aws_locals_spec_template_id}}\r\n    ],\r\n    \"permissions\": {\r\n      \"resourcePermissions\": {\r\n        \"all\":true\r\n      }\r\n    }\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
