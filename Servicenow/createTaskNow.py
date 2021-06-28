@@ -14,13 +14,14 @@ headers = {"Content-Type":"application/json","Accept":"application/json"}
 jbody={"short_description":"test","state":"2"}
 body=json.dumps(jbody)
 response = requests.post(url, auth=(user, pwd), headers=headers ,data=body)
-
+'''
 # Check for HTTP codes other than 200
 if response.status_code != 200: 
     print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
     exit()
-
+'''
 # Decode the JSON response into a dictionary and use the data
 data = response.json()
-task=data['result']['number']
+print(data)
+task = data['result']['number']
 print ("Task: " + task + " is created.")
