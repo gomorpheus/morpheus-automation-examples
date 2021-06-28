@@ -22,4 +22,5 @@ if response.status_code != 200:
 
 # Decode the JSON response into a dictionary and use the data
 data = response.json()
-print(data)
+task=data['result']['number']
+print ("Task: " + task + " is created.")
