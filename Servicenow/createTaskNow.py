@@ -11,7 +11,7 @@ user = cyuser
 pwd = cypass
 
 headers = {"Content-Type":"application/json","Accept":"application/json"}
-jbody={"short_description":"test","state":"2"}
+jbody={"short_description":"test","state":"1"}
 body=json.dumps(jbody)
 response = requests.post(url, auth=(user, pwd), headers=headers ,data=body)
 
