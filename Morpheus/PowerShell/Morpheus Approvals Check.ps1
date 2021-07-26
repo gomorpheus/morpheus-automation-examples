@@ -7,8 +7,6 @@ pwsh -c - <<'EOF'
     
     .DESCRIPTION
         Configure this script to run as a 'Job' in Morphues.  This can run at your prefered schedule and find any pending approvals and email.
-        Assumption of this script, is this will be pulled from a git repo.  If you need to insert this script locally, modify the parameters
-        to be actual variables configured from your Morphues.
 
 #>
 
@@ -30,7 +28,7 @@ $ContentType = 'application/json'
 ### Script ###
 $Approvals = (Invoke-WebRequest -Method Get -Uri ($MorphURL + 'api/approvals?max=1000000') -Headers $Header).content | ConvertFrom-Json | select -ExpandProperty approvals
 
-Write-Host "New Approvals Pending Within Last $checkTime Minutes...<br />"
+Write-Host "<b>New Approvals Pending Within Last $checkTime Minutes...<br />"
 Write-Host "<b>Morpheus Approvals Site: </b><a>$($MorphURL + 'operations/approvals/')</a><br />"
 
 if (!($approvals.status -like "*requested*")) {
