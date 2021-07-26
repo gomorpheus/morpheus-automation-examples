@@ -33,7 +33,7 @@ Write-Host "<b>Morpheus Approvals Site: </b><a>$($MorphURL + 'operations/approva
 
 if (!($approvals.status -like "*requested*")) {
     write-host 'No Approvals Pending...'
-    exit 0
+    exit 1
 }
 else {
     foreach ($Approval in $Approvals) {
@@ -116,7 +116,7 @@ else {
     }
     if ($counter -eq 0) {
         write-host 'No NEW Approvals Pending...'
-        exit 0
+        exit 1
     }
 }
 
