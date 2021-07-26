@@ -154,13 +154,13 @@ if location == "csc" and public == "lan":
     print("CSC-LAN")
     if servertype == "app" and env == "production":
         print("CSC-LAN-App-Prod")
-        #networkname="vxw-dvs-555-virtualwire-109-sid-8074-CSC-DC-C-APP"
-        #clusterName="Business Applications"
-        #datastorename="FA-VVOL-BA"
+        networkname="vxw-dvs-555-virtualwire-109-sid-8074-CSC-DC-C-APP"
+        clusterName="Business Applications"
+        datastorename="FA-VVOL-BA"
         #clusterName="Demo-vSAN"
-        networkname="TDI-DC-C-App"
-        clusterName="Demo-vSAN"
-        datastorename="vsanDatastore"
+        #networkname="TDI-DC-C-App"
+        #clusterName="Demo-vSAN"
+        #datastorename="vsanDatastore"
         gid=getGroupId()
         #print(gid)
         cid=getCloudId(gid)
