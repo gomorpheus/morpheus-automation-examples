@@ -1,0 +1,883 @@
+{
+	"info": {
+		"_postman_id": "12eff7e9-154b-4b9e-9fa2-71c6c88686be",
+		"name": "Morpheus Terraform Instance Type: Cloud Resource",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Integration",
+			"item": [
+				{
+					"name": "Create Git Integration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"console.log(json)\r",
+									"var id = json.integration.id\r",
+									"pm.collectionVariables.set(\"integration_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"integration\": {\r\n        \"name\": \"Morpheus Automation Examples\",\r\n        \"type\": \"git\",\r\n        \"serviceUrl\": \"https://github.com/gomorpheus/morpheus-automation-examples.git\",\r\n        \"config\": {\r\n            \"defaultBranch\": \"main\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/integrations",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"integrations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"console.log(json)\r",
+									"var id = json.data[0].value\r",
+									"console.log(\"ID is:\" + id)\r",
+									"pm.collectionVariables.set(\"code_repo_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{morph_api}}/api/options/codeRepositories?integrationId={{integration_id}}",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"options",
+								"codeRepositories"
+							],
+							"query": [
+								{
+									"key": "integrationId",
+									"value": "{{integration_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Spec Templates",
+			"item": [
+				{
+					"name": "AWS",
+					"item": [
+						{
+							"name": "Create AWS Spec Template: Provider",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var json = JSON.parse(responseBody);\r",
+											"console.log(json)\r",
+											"var id = json.specTemplate.id\r",
+											"pm.collectionVariables.set(\"aws_provider_spec_template_id\", id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Provider Role Assume\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/provider.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{code_repo_id}}\r\n                }\r\n    }\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{morph_api}}/api/library/spec-templates",
+									"protocol": "https",
+									"host": [
+										"{{morph_api}}"
+									],
+									"path": [
+										"api",
+										"library",
+										"spec-templates"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create AWS Spec Template: Subnet by Count",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var json = JSON.parse(responseBody);\r",
+											"console.log(json)\r",
+											"var id = json.specTemplate.id\r",
+											"pm.collectionVariables.set(\"aws_subnet_by_count_spec_template_id\", id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Subnet by Count\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/subnet_by_count.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{code_repo_id}}\r\n                }\r\n    }\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{morph_api}}/api/library/spec-templates",
+									"protocol": "https",
+									"host": [
+										"{{morph_api}}"
+									],
+									"path": [
+										"api",
+										"library",
+										"spec-templates"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create AWS Spec Template: Default Vars",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var json = JSON.parse(responseBody);\r",
+											"console.log(json)\r",
+											"var id = json.specTemplate.id\r",
+											"pm.collectionVariables.set(\"aws_default_vars_spec_template_id\", id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Default Vars\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/default_vars.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{code_repo_id}}\r\n                }\r\n    }\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{morph_api}}/api/library/spec-templates",
+									"protocol": "https",
+									"host": [
+										"{{morph_api}}"
+									],
+									"path": [
+										"api",
+										"library",
+										"spec-templates"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create AWS Spec Template: Locals",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var json = JSON.parse(responseBody);\r",
+											"console.log(json)\r",
+											"var id = json.specTemplate.id\r",
+											"pm.collectionVariables.set(\"aws_locals_spec_template_id\", id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS Locals\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/locals.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{code_repo_id}}\r\n                }\r\n    }\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{morph_api}}/api/library/spec-templates",
+									"protocol": "https",
+									"host": [
+										"{{morph_api}}"
+									],
+									"path": [
+										"api",
+										"library",
+										"spec-templates"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create AWS Spec Template: VPC",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var json = JSON.parse(responseBody);\r",
+											"console.log(json)\r",
+											"var id = json.specTemplate.id\r",
+											"pm.collectionVariables.set(\"aws_vpc_spec_template_id\", id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"specTemplate\": {\r\n    \"name\": \"AWS VPC\",\r\n    \"type\": {\r\n      \"code\": \"terraform\"\r\n    },\r\n    \"config\": {},\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentRef\": \"main\",\r\n      \"contentPath\": \"Instance Types/Terraform/CloudResource/aws/vpc.tf\",\r\n      \"repository\": {\r\n                    \"id\": {{code_repo_id}}\r\n                }\r\n    }\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{morph_api}}/api/library/spec-templates",
+									"protocol": "https",
+									"host": [
+										"{{morph_api}}"
+									],
+									"path": [
+										"api",
+										"library",
+										"spec-templates"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Option Lists",
+			"item": [
+				{
+					"name": "Create AWS Account Option LIst",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"var id = json.optionTypeList.id\r",
+									"console.log(json.optionTypeList.id)\r",
+									"pm.collectionVariables.set(\"aws_account_number_option_list_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"optionTypeList\": {\r\n    \"name\": \"AWS Account # From Cloud Code\",\r\n    \"description\": \"Gather AWS account number from AWS Clouds' codes\",\r\n    \"type\": \"api\",\r\n    \"apiType\": \"clouds\",\r\n    \"realTime\": true,\r\n    \"sourceMethod\": \"GET\",\r\n    \"initialDataset\": null,\r\n    \"translationScript\": \"//Grab AWS Clouds and Push Values\\r\\nfor (var x = 0; x < data.length; x++) {\\r\\n  if (data[x].zoneType.code == \\\"amazon\\\" && data[x].code !== null) {\\r\\n    results.push({name:data[x].name, value:data[x].code});\\r\\n  }\\r\\n}\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-type-lists",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-type-lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Subnet CIDR Option List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"var id = json.optionTypeList.id\r",
+									"console.log(json.optionTypeList.id)\r",
+									"pm.collectionVariables.set(\"subnet_cidr_option_list_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"optionTypeList\": {\r\n    \"name\": \"Subnet CIDR\",\r\n    \"description\": \"Select list of available CIDRs for the subnet\",\r\n    \"type\": \"manual\",\r\n    \"initialDataset\": \"'/24','24'\\r\\n'/25','25'\\r\\n'/26','26'\\r\\n'/27','27'\\r\\n'/28','28'\\r\\n'/29','29'\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-type-lists",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-type-lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create AWS Region Option List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"var id = json.optionTypeList.id\r",
+									"console.log(json.optionTypeList.id)\r",
+									"pm.collectionVariables.set(\"aws_regions_option_list_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"optionTypeList\": {\r\n    \"name\": \"AWS Regions\",\r\n    \"description\": \"Select list of available AWS Regions\",\r\n    \"type\": \"manual\",\r\n    \"initialDataset\": \"'us-east-1','us-east-1'\\r\\n'us-east-2','us-east-2'\\r\\n'us-west-1','us-west-1'\\r\\n'us-west-2','us-west-2'\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-type-lists",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-type-lists"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Option Types",
+			"item": [
+				{
+					"name": "Create AWS Account Option Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"var id = json.optionType.id\r",
+									"console.log(json.optionType.id)\r",
+									"pm.collectionVariables.set(\"aws_account_number_option_type_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"AWS Account\",\r\n       \"description\": \"Selection of AWS accounts from cloud code\",\r\n       \"fieldName\": \"awsAccount\",\r\n       \"type\": \"select\",\r\n       \"fieldLabel\": \"Select AWS account\",\r\n       \"helpBlock\": \"Pick your desired AWS account\",\r\n       \"required\": true,\r\n       \"exportMeta\": true,\r\n       \"optionList\": {\r\n           \"id\": \"{{aws_account_number_option_list_id}}\"\r\n       }\r\n     }}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-types",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create AWS Region Option Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"var id = json.optionType.id\r",
+									"console.log(json.optionType.id)\r",
+									"pm.collectionVariables.set(\"aws_region_option_type_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"AWS Region\",\r\n       \"description\": \"Selection of AWS regions\",\r\n       \"fieldName\": \"awsRegion\",\r\n       \"type\": \"select\",\r\n       \"fieldLabel\": \"Select AWS Region\",\r\n       \"helpBlock\": \"Pick your desired AWS region\",\r\n       \"required\": true,\r\n       \"exportMeta\": true,\r\n       \"optionList\": {\r\n           \"id\": \"{{aws_regions_option_list_id}}\"\r\n       }\r\n     }}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-types",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create CIDR Mask Option Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"var id = json.optionType.id\r",
+									"console.log(json.optionType.id)\r",
+									"pm.collectionVariables.set(\"subnet_cidr_option_type_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"CIDR Mask\",\r\n       \"description\": \"Selection of CIDR mask\",\r\n       \"fieldName\": \"cidrMask\",\r\n       \"type\": \"select\",\r\n       \"fieldLabel\": \"Select CIDR mask\",\r\n       \"helpBlock\": \"Pick your desired CIDR for your subnets\",\r\n       \"required\": true,\r\n       \"exportMeta\": true,\r\n       \"optionList\": {\r\n           \"id\": \"{{subnet_cidr_option_list_id}}\"\r\n       }\r\n     }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-types",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Subnet Count Option Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"var id = json.optionType.id\r",
+									"console.log(json.optionType.id)\r",
+									"pm.collectionVariables.set(\"subnet_count_option_type_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"Subnet Count\",\r\n       \"description\": \"Count of subnets to create\",\r\n       \"fieldName\": \"subnetCount\",\r\n       \"type\": \"text\",\r\n       \"fieldLabel\": \"How many subnets?\",\r\n       \"helpBlock\": \"Select subnet count\",\r\n       \"required\": true\r\n     }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-types",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-types"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Instance Type",
+			"item": [
+				{
+					"name": "Create Cloud Resource Instance Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"var id = json.instanceType.id\r",
+									"console.log(json.instanceType.id)\r",
+									"pm.collectionVariables.set(\"instance_type_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"instanceType\": {\r\n    \"name\": \"Cloud Resource\",\r\n    \"code\": \"cloudResource\",\r\n    \"description\": \"Deploy a resource pool with netoworking into a cloud\",\r\n    \"category\": \"cloud\",\r\n    \"visibility\": \"public\",\r\n    \"environmentPrefix\": \"RESOURCE_POOL\",\r\n    \"hasSettings\": true,\r\n    \"hasAutoScale\": false,\r\n    \"hasDeployment\": false\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/instance-types",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"instance-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create AWS Layout Cloud Resource",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"instanceTypeLayout\": {\r\n    \"name\": \"AWS Cloud Resources\",\r\n    \"instanceVersion\": \"1.1\",\r\n    \"description\": \"Deploy a VPC and subnets in AWS \",\r\n    \"creatable\": true,\r\n    \"memoryRequirement\": 0,\r\n    \"sortOrder\": 0,\r\n    \"supportsConvertToManaged\": false,\r\n    \"provisionTypeCode\": \"terraform\",\r\n    \"optionTypes\": [\r\n        {{aws_region_option_type_id}},\r\n        {{aws_account_number_option_type_id}},\r\n        {{subnet_cidr_option_type_id}},\r\n        {{subnet_count_option_type_id}}\r\n    ],\r\n    \"specTemplates\": [\r\n        {{aws_provider_spec_template_id}},\r\n        {{aws_vpc_spec_template_id}},\r\n        {{aws_default_vars_spec_template_id}},\r\n        {{aws_subnet_by_count_spec_template_id}},\r\n        {{aws_locals_spec_template_id}}\r\n    ],\r\n    \"permissions\": {\r\n      \"resourcePermissions\": {\r\n        \"all\":true\r\n      }\r\n    }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/instance-types/:instanceTypeId/layouts",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"instance-types",
+								":instanceTypeId",
+								"layouts"
+							],
+							"variable": [
+								{
+									"key": "instanceTypeId",
+									"value": "{{instance_type_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{morph_bearer}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "morph_api",
+			"value": ""
+		},
+		{
+			"key": "morph_bearer",
+			"value": ""
+		},
+		{
+			"key": "integration_id",
+			"value": ""
+		},
+		{
+			"key": "code_repo_id",
+			"value": ""
+		},
+		{
+			"key": "aws_provider_spec_template_id",
+			"value": ""
+		},
+		{
+			"key": "aws_subnet_by_count_spec_template_id",
+			"value": ""
+		},
+		{
+			"key": "aws_default_vars_spec_template_id",
+			"value": ""
+		},
+		{
+			"key": "aws_locals_spec_template_id",
+			"value": ""
+		},
+		{
+			"key": "aws_vpc_spec_template_id",
+			"value": ""
+		},
+		{
+			"key": "aws_account_number_option_list_id",
+			"value": ""
+		},
+		{
+			"key": "subnet_cidr_option_list_id",
+			"value": ""
+		},
+		{
+			"key": "aws_regions_option_list_id",
+			"value": ""
+		},
+		{
+			"key": "aws_account_number_option_type_id",
+			"value": ""
+		},
+		{
+			"key": "aws_region_option_type_id",
+			"value": ""
+		},
+		{
+			"key": "subnet_cidr_option_type_id",
+			"value": ""
+		},
+		{
+			"key": "subnet_count_option_type_id",
+			"value": ""
+		},
+		{
+			"key": "instance_type_id",
+			"value": ""
+		}
+	]
+}
