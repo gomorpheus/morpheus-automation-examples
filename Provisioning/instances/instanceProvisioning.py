@@ -67,6 +67,7 @@ def getCloudId(gid):
 # Write a function to get the networkId
 def getNetworkId(nid,zid):
     apiUrl = 'https://%s/api/networks?phrase=%s&zoneId=%s' % (host, nid, zid)
+    print(apiUrl)
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
