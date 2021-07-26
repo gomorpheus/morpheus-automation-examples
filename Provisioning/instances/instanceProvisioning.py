@@ -113,7 +113,7 @@ def provision(zid,siteid,netid,clusterId,dsId,iname):
     #below used by Anish in test lab
     #jbody={"zoneId":zid,"instance":{"name":iname,"site":{"id":siteid},"type":"customcentos","instanceContext":"dev","layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":"","vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":10,"sizeId":None,"storageType":1,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
     body=json.dumps(jbody)
-    #print(body)
+    print(body)
     apiUrl = 'https://%s/api/instances' % (host)
     url=str(apiUrl)
     r = requests.post(url, headers=headers, data=body, verify=False)
