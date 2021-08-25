@@ -11,15 +11,22 @@ headers = {"Content-Type":"application/json","Accept":"application/json","Author
 
 # Get all discovered VM
 def getalldiscoveredvms():
-    print("Get a list of discovered VM's ")
-    url="%sapi/servers?managed=false" %(host)
+    print("Get a list of discovered VM's\n")
+    url="https://10.30.20.59/api/servers?managed=false&serverType=Vmware+VM&max=1" 
     r = requests.get(url, headers=headers, verify=False)
-    l = len(data['servers'])
     data = r.json()
+    l = len(data['servers'])
     if l is None:
         print("No discovered servers found")
     else:
-        print(data)
+        print("Total number of discovered servers "+ str(l) + ".\n")
+        for i in range(0, l):
+            print("Plan for VM "+ data['servers'][i]['name'] + " is " + str(data['servers'][i]['plan']['name']) + " and the id of the plan is " + str(data['servers'][i]['plan']['id']) + ".\nRemoving the discovered VM " + data['servers'][i]['name'] + " from morpheus without deleting the VM infrastructure. Upon Cloud sync the VM will be back in morpheus as discovered type VM." )
+            url="https://10.30.20.59/api/servers/%s?removeResources=off" % (data['servers'][i]['id'])
+            r = requests.delete(url, headers=headers, verify=False)
+            rdata = r.json()
+            if rdata['success'] == True:
+                print("VM "+ data['servers'][i]['name'] + " successfully deleted.\n")
 
 def main():
     getalldiscoveredvms()
