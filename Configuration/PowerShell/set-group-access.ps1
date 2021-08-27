@@ -1,3 +1,5 @@
+### This script is incomplete.
+
 ### Params ###
 Param (
     [Parameter(Mandatory = $true)]$bearer,
