@@ -71,6 +71,7 @@ def getCloudId(gid):
 # Write a function to get the networkId
 def getNetworkId(nid,zid):
     apiUrl = 'https://%s/api/networks?phrase=%s&zoneId=%s' % (host, nid, zid)
+    print(apiUrl)
     url=str(apiUrl)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
@@ -108,11 +109,11 @@ def getDate():
 def provision(zid,siteid,netid,clusterId,dsId,iname):
     #JSON body of the post for instance
     ##jbody={"zoneId":zid,"instance":{"name":"test02","site":{"id":siteid},"type":"win-server","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
-    #jbody={"zoneId":zid,"instance":{"name":iname,"site":{"id":siteid},"type":"win-server","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
+    jbody={"zoneId":zid,"instance":{"name":iname,"site":{"id":siteid},"type":"win-server","instanceContext":env,"layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":None,"vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":80,"sizeId":None,"storageType":2,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
     #below used by Anish in test lab
-    jbody={"zoneId":zid,"instance":{"name":iname,"site":{"id":siteid},"type":"customcentos","instanceContext":"dev","layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":"","vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":10,"sizeId":None,"storageType":1,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
+    #jbody={"zoneId":zid,"instance":{"name":iname,"site":{"id":siteid},"type":"customcentos","instanceContext":"dev","layout":{"id":layoutId},"plan":{"id":plan},"networkDomain":{"id":None}},"config":{"resourcePoolId":clusterId,"noAgent":None,"smbiosAssetTag":None,"nestedVirtualization":"off","hostId":"","vmwareFolderId":None,"createUser":True},"volumes":[{"id":-1,"rootVolume":True,"name":"root","size":10,"sizeId":None,"storageType":1,"datastoreId":dsId}],"networkInterfaces":[{"network":{"id":netid}}]}
     body=json.dumps(jbody)
-    #print(body)
+    print(body)
     apiUrl = 'https://%s/api/instances' % (host)
     url=str(apiUrl)
     r = requests.post(url, headers=headers, data=body, verify=False)
@@ -153,13 +154,13 @@ if location == "csc" and public == "lan":
     print("CSC-LAN")
     if servertype == "app" and env == "production":
         print("CSC-LAN-App-Prod")
-        #networkname="vxw-dvs-555-virtualwire-109-sid-8074-CSC-DC-C-APP"
-        #clusterName="Business Applications"
-        #datastorename="FA-VVOL-BA"
+        networkname="vxw-dvs-555-virtualwire-109-sid-8074-CSC-DC-C-APP"
+        clusterName="Business Applications"
+        datastorename="FA-VVOL-BA"
         #clusterName="Demo-vSAN"
-        networkname="TDI-DC-C-App"
-        clusterName="Demo-vSAN"
-        datastorename="vsanDatastore"
+        #networkname="TDI-DC-C-App"
+        #clusterName="Demo-vSAN"
+        #datastorename="vsanDatastore"
         gid=getGroupId()
         #print(gid)
         cid=getCloudId(gid)
