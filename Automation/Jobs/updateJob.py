@@ -2,12 +2,10 @@ import requests
 import sys
 import json
 
-#Variables
-#bearerToken = sys.argv[1]
+
 bearerToken=morpheus['morpheus']['apiAccessToken']
 osType = morpheus['server']['osType']
 platformType = morpheus['server']['platformVersion']
-#windowsVersion = morpheus['results']['windowsos']
 windowsVersion="2016"
 morphurl = morpheus['morpheus']['applianceUrl']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "Bearer " + (bearerToken)} 
