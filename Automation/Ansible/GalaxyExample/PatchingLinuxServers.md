@@ -10,6 +10,7 @@ This use case is an example of the level of customization and User friendly UI w
 ## Pre-reqs:
 Morpheus v5.3.2 +
 [Download](https://morpheushub.com/download)
+
 [Install Ansible](https://docs.morpheusdata.com/en/latest/integration_guides/Automation/ansible.html#id1) on Morpheus App server(s)
 Ubuntu
 ```
@@ -33,13 +34,25 @@ Install [mysql](https://docs.ansible.com/ansible/latest/collections/community/my
 
 Install [patching](https://galaxy.ansible.com/ataha/linux_patching) collection
 
-Run the below commands on morpheus app server(s):
+Run the below commands on morpheus app server(s) as root:
 ```
 ansible-galaxy collection install ataha.linux_patching
 ansible-galaxy collection install community.mysql
+mv /root/.ansible/collections/ansible_collections/ataha /opt/morpheus/.local/.ansible/collections/ansible_collections/
+mv /root/.ansible/collections/ansible_collections/community /opt/morpheus/.local/.ansible/collections/ansible_collections/community/
+chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/ansible_collections/
 ```
 
 ## Add Ansible Integration in morpheus
+[How to Doc](https://docs.morpheusdata.com/en/latest/integration_guides/Automation/ansible.html#add-ansible-integration)
+Use the below values for the integration
+**Ansible Git URL** *https://github.com/cuxtud/morpheus-ansible2.git*
+**Default Branch** *master*
+**Playbooks Path** */*
+**Roles Path** */roles*
+**Group Variables Path** */group_vars*
+**Host Variables Path** */hosts*
+**User MorpheusAgent Command Bus** *checked*
 
 ## Add git integration 
 
