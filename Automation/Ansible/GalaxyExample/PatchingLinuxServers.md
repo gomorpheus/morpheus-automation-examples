@@ -48,20 +48,26 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 
 <dl>
 <b>Use the below values for the integration</b>
-    <dt>Ansible Git URL</dt> 
-    <dd>https://github.com/cuxtud/morpheus-ansible2.git</dd>
+<dt>Ansible Git URL</dt> 
+<dd>https://github.com/cuxtud/morpheus-ansible2.git</dd>
 
-    <dt>Default Branch</dt> 
-    <dd>master</dd>
-**Playbooks Path** */*
+<dt>Default Branch</dt> 
+<dd>master</dd>
 
-**Roles Path** */roles*
+<dt>Playbooks Path</dt> 
+<dd>/</dd>
 
-**Group Variables Path** */group_vars*
+<dt>Roles Path</dt> 
+<dd>/roles</dd>
 
-**Host Variables Path** */hosts*
+<dt>Group Variables Path</dt> 
+<dd>/group_vars</dd>
 
-**User MorpheusAgent Command Bus** *checked*
+<dt>Host Variables Path</dt> 
+<dd>/hosts</dd>
+
+<dt>User MorpheusAgent Command Bus</dt> 
+<dd>checked</dd>
 </dl>
 
 ## Add git integration 
