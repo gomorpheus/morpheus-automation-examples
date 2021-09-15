@@ -6,6 +6,8 @@ When a user deploys an instance *in this use case we are referring to Centos 7* 
 This use case is an example of the level of customization and User friendly UI with RBAC that can be done.
 
 ![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/Patching.png "Flow")
+
+<dd>The above image shows the flow of user self service provisioning. User submits the instance provisioning of a Centos VM via Morpheus UI/API. The 
  
 **[Video](https://www.youtube.com/watch?v=iLDZZVEkkos)**
 
