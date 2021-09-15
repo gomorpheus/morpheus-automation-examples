@@ -48,7 +48,7 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 
 <dl>
 <b>Use the below values for the integration</b>
-        <dt>Ansible Git URL</dt> 
+        <dt><dt>Ansible Git URL</dt></dt> 
         <dd>https://github.com/cuxtud/morpheus-ansible2.git</dd>
 
 **Default Branch** *master*
