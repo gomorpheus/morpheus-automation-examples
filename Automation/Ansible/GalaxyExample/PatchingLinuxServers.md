@@ -1,20 +1,43 @@
 # Patching Linux servers using Anisble with Morpheus to report on the Patching data.
 
 ### Use Case:
+When a user deploys an instance *in this use case we are referring to Centos 7* from Morpheus, based on the Operating system and version the instance should be added to a patching job. The job is scheduled to run on the 29th of every month at 23:45hrs. The job runs an ansible playbook on all the servers attached, the play patching the OS to latest verion. The patching results (success, failed, noChanges) are then recorded in Morpheus. A custom report type (report template) is added to generate a report on the patching results.
 
-### Overview:
-
-### Pre-reqs:
-Morpheus version 5.3.2 +
-
+This use case is an example of the level of customization and User friendly UI with RBAC that can be done.
+ 
 **[Video](https://www.youtube.com/watch?v=iLDZZVEkkos)**
 
-## Install Ansible on Morpheus App server(s)
-
+## Pre-reqs:
+Morpheus v5.3.2 +
+[Download](https://morpheushub.com/download)
+[Install Ansible](https://docs.morpheusdata.com/en/latest/integration_guides/Automation/ansible.html#id1) on Morpheus App server(s)
+Ubuntu
+```
+sudo apt-get install software-properties-common
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install ansible
+```
+Centos
+```
+sudo yum install epel-release
+sudo yum install ansible
+```
+Then create the working Ansible directory for Morpheus
+```
+sudo mkdir /opt/morpheus/.local/.ansible
+sudo chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible
+```
 ## Install galaxy collection 
 Install [mysql](https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_query_module.html) collection
 
 Install [patching](https://galaxy.ansible.com/ataha/linux_patching) collection
+
+Run the below commands on morpheus app server(s):
+```
+ansible-galaxy collection install ataha.linux_patching
+ansible-galaxy collection install community.mysql
+```
 
 ## Add Ansible Integration in morpheus
 
@@ -28,7 +51,7 @@ Install [patching](https://galaxy.ansible.com/ataha/linux_patching) collection
 
 ## Add a custome instance type of Centos and attach the workflow to the layout
 
-## Create a execution schedule in Morpheus to run on the 29th of every month at 23:45hrs
+## Create a execution schedule in Morpheus 
 
 ## Create a Job in Morpheus with associated python Task to updateJob
 
