@@ -45,13 +45,21 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 
 ## Add Ansible Integration in morpheus
 [How to Doc](https://docs.morpheusdata.com/en/latest/integration_guides/Automation/ansible.html#add-ansible-integration)
+
 Use the below values for the integration
-**Ansible Git URL** *https://github.com/cuxtud/morpheus-ansible2.git*
+
+    **Ansible Git URL** *https://github.com/cuxtud/morpheus-ansible2.git*
+
 **Default Branch** *master*
+
 **Playbooks Path** */*
+
 **Roles Path** */roles*
+
 **Group Variables Path** */group_vars*
+
 **Host Variables Path** */hosts*
+
 **User MorpheusAgent Command Bus** *checked*
 
 ## Add git integration 
