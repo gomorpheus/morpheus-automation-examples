@@ -5,7 +5,6 @@ When a user deploys an instance *in this use case we are referring to Centos 7* 
 
 This use case is an example of the level of customization and User friendly UI with RBAC that can be done.
 
-Inline-style: 
 ![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/Patching.png) "Flow"
  
 **[Video](https://www.youtube.com/watch?v=iLDZZVEkkos)**
