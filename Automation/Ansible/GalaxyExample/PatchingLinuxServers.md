@@ -47,7 +47,7 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 [How to Doc](https://docs.morpheusdata.com/en/latest/integration_guides/Automation/ansible.html#add-ansible-integration)
 
 <dl>
-Use the below values for the integration
+<b>Use the below values for the integration</b>
     <dt>Ansible Git URL</dt> 
     <dd>https://github.com/cuxtud/morpheus-ansible2.git</dd>
 
