@@ -183,10 +183,10 @@ In Morpheus UI, Navigate to *Provisioning > Automation > workflow > Add > Provis
 
 This [Video](https://d.pr/v/F4XWwG) demonstrates how to create:
 
-..* Instance type
-..* Layout
-..* Attach workflow to layout
-..* Add node type to layout
+* Instance type
+* Layout
+* Attach workflow to layout
+* Add node type to layout
 
 ## Create an execution schedule in Morpheus 
 
@@ -275,8 +275,14 @@ mysql> CREATE TABLE `patching` (
 
 ## Upload the patching report plugin in Morpheus
 
-## Provision an instance 
+[Download](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/plugin/custom_report_type/build/libs/morpheus-example-reports-plugin-1.2.2.jar) the patching report plugin to your desktop
 
-## Execute the Ansible task on the instance to patch the Centos instance deployed
+Upload in Morpheus UI, navigate to *Administration > Integrations > Plugins > Choose File > Upload*
 
-## Generate Report
+If the upload is successful, then the screen should look like
+
+![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/pluginUpload.png  "Custom Report Plugin")
+
+## Testing
+
+**[Video](https://www.youtube.com/watch?v=iLDZZVEkkos)**
