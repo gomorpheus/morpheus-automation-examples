@@ -182,10 +182,11 @@ In Morpheus UI, Navigate to *Provisioning > Automation > workflow > Add > Provis
 ## Add a custom instance type of Centos and attach the workflow to the layout
 
 This [Video](https://d.pr/v/F4XWwG) demonstrates how to create:
-...*Instance type*
-...*Layout*
-...*Attach workflow to layout*
-...*Add node type to layout*
+
+..* Instance type
+..* Layout
+..* Attach workflow to layout
+..* Add node type to layout
 
 ## Create an execution schedule in Morpheus 
 
