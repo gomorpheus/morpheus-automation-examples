@@ -33,6 +33,9 @@ Then create the working Ansible directory for Morpheus
 sudo mkdir /opt/morpheus/.local/.ansible
 sudo chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible
 ```
+
+[Install Python on Morpheus App Server(s)]()
+
 ## Install galaxy collection 
 Install [mysql](https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_query_module.html) collection
 
@@ -74,11 +77,79 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 <dd>checked</dd>
 </dl>
 
+![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/AddAnsibleIntegration.png "Ansible Integration")
+
+<dt> Save Changes </dt>
+
 ## Add git integration 
+
+</dt*Add in Morpheus UI. Nagivate to Administration > Integration > Add -> Git*
+
+<dt> Name </dt>
+<dd> Enter any name </dd>
+
+<dt> Git Url </dt>
+<dd> https://github.com/gomorpheus/morpheus-automation-examples </dd>
+
+<dt> Default Branch </dt>
+<dd> main </dd>
+
+![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/gitIntegration.png "Git Integration")
+
+<dt> Save Changes </dt>
 
 ## Add a task of type Ansible and refer the playbook
 
+*In Morpheus UI, Browse to Provisioning > Automation > Tasks > Add*
+
+<dt> Name </dt>
+<dd> <i> Enter a Name </i> </dd>
+
+<dt> Type </dt>
+<dd> Select Ansible Playbook </dd>
+
+<dt> Ansible Repo </dt>
+<dd> Select the ansible integration from the list </dd>
+
+<dt> Playbook </dt>
+<dd> patching_linux.yml </dd>
+
+<dt> Execute Target </dt>
+<dd> Resource </dd>
+
+![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/AnsibleTask.png "Ansible Task")
+
+<dt> Save Changes </dt>
+
 ## Add a task of type python and refer to the updateJob.py script from git source. 
+
+<dt> Name </dt>
+<dd> <i> Enter a name </i> </dd>
+
+<dt> Type </dt>
+<dd> Select Python Script </dd>
+
+<dt> Result Type </dt>
+<dd> None </dd>
+
+<dt> Source </dt>
+<dd> Select Repository </dt>
+
+<dt> Repository </dt>
+<dd> Select the git integration </dd>
+
+<dt> File Path </dt>
+<dd> Automation/Jobs/updateJob.py </dd>
+
+<dt> Additional Packages </dt>
+<dd> requests simplejson </dd>
+
+<dt> Execute Target </dt>
+<dd> Local </dd>
+
+![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/pythonTask.png "Python Task")
+
+<dt> Save Changes </dt>
 
 ## Add the python task to a provisioning workflow.
 
