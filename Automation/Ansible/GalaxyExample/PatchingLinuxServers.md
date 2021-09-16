@@ -83,7 +83,7 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 
 ## Add git integration 
 
-</dt*Add in Morpheus UI. Nagivate to Administration > Integration > Add -> Git*
+*Add in Morpheus UI. Nagivate to Administration > Integration > Add -> Git*
 
 <dt> Name </dt>
 <dd> Enter any name </dd>
