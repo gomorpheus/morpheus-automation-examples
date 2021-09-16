@@ -78,13 +78,14 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 </dl>
 
 ![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/AddAnsibleIntegration.png "Ansible Integration")
-
+<dl>
 <dt> Save Changes </dt>
+</dl>
 
 ## Add git integration 
 
 *Add in Morpheus UI. Nagivate to Administration > Integration > Add -> Git*
-
+<dl>
 <dt> Name </dt>
 <dd> Enter any name </dd>
 
@@ -93,11 +94,12 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 
 <dt> Default Branch </dt>
 <dd> main </dd>
+</dl>
 
 ![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/gitIntegration.png "Git Integration")
-
+<dl>
 <dt> Save Changes </dt>
-
+</dl>
 ## Add a task of type Ansible and refer the playbook
 
 *In Morpheus UI, Browse to Provisioning > Automation > Tasks > Add*
