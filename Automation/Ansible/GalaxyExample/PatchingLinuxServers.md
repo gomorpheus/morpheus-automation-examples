@@ -7,9 +7,10 @@ This use case is an example of the level of customization and User friendly UI w
 
 ![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/Patching_new.png "Flow")
 
-<dd>The above image shows the flow of user self service provisioning. User submits the instance provisioning of a Centos VM via Morpheus UI/API. The 
- 
-**[Video](https://www.youtube.com/watch?v=iLDZZVEkkos)**
+<dd>The above image shows the flow of user self service provisioning > auto add to job for patching > Generate report for patching </dd>
+
+
+**[Video](https://www.youtube.com/watch?v=iLDZZVEkkos)** Demostration of this use case
 
 ## Pre-reqs:
 Morpheus v5.3.2 +
@@ -38,9 +39,10 @@ sudo chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible
 
 ## Install galaxy collection 
 Install [mysql](https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_query_module.html) collection
+
 Install [patching](https://galaxy.ansible.com/ataha/linux_patching) collection
 
-...Run the below commands on morpheus app server(s) as **root**:
+Run the below commands on morpheus app server(s) as **root**:
 
 ```
 yum install python3-devel mysql-devel python3-pip python3-pymysql -y
@@ -53,7 +55,8 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 ```
 
 ## Add Ansible Integration in morpheus
-[How to Doc](https://docs.morpheusdata.com/en/latest/integration_guides/Automation/ansible.html#add-ansible-integration)
+
+[How to add integration](https://docs.morpheusdata.com/en/latest/integration_guides/Automation/ansible.html#add-ansible-integration)
 
 <dl>
 <b>Use the below values for the integration</b>
