@@ -6,9 +6,9 @@ When a user deploys an instance *in this use case we are referring to Centos 7* 
 This use case is an example of the level of customization and User friendly UI with RBAC that can be done.
 
 ![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/Patching_new.png "Flow")
-
+<dl>
 <dd>The above image shows the flow of user self service provisioning > auto add to job for patching > Generate report for patching </dd>
-
+</dl>
 
 **[Video](https://www.youtube.com/watch?v=iLDZZVEkkos)** Demostration of this use case
 
