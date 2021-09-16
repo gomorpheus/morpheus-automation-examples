@@ -34,15 +34,17 @@ sudo mkdir /opt/morpheus/.local/.ansible
 sudo chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible
 ```
 
-[Install Python on Morpheus App Server(s)]()
+[Install Python on Morpheus App Server(s)](https://morpheus.lightning.force.com/lightning/r/Knowledge__kav/ka04N0000003V32QAE/view) *python tasks wont run if this pre-reqs is not completed.*
 
 ## Install galaxy collection 
 Install [mysql](https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_query_module.html) collection
-
 Install [patching](https://galaxy.ansible.com/ataha/linux_patching) collection
 
-Run the below commands on morpheus app server(s) as root:
+...Run the below commands on morpheus app server(s) as **root**:
+
 ```
+yum install python3-devel mysql-devel python3-pip python3-pymysql -y
+pip3 install mysqlclient
 ansible-galaxy collection install ataha.linux_patching
 ansible-galaxy collection install community.mysql
 mv /root/.ansible/collections/ansible_collections/ataha /opt/morpheus/.local/.ansible/collections/ansible_collections/
@@ -100,10 +102,11 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 <dl>
 <dt> Save Changes </dt>
 </dl>
+
 ## Add a task of type Ansible and refer the playbook
 
 *In Morpheus UI, Browse to Provisioning > Automation > Tasks > Add*
-
+<dl>
 <dt> Name </dt>
 <dd> <i> Enter a Name </i> </dd>
 
@@ -118,13 +121,17 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 
 <dt> Execute Target </dt>
 <dd> Resource </dd>
+</dl>
 
 ![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/AnsibleTask.png "Ansible Task")
 
+<dl>
 <dt> Save Changes </dt>
+</dl>
 
 ## Add a task of type python and refer to the updateJob.py script from git source. 
 
+<dl>
 <dt> Name </dt>
 <dd> <i> Enter a name </i> </dd>
 
@@ -148,29 +155,127 @@ chown -R morpheus-app.morpheus-local /opt/morpheus/.local/.ansible/collections/a
 
 <dt> Execute Target </dt>
 <dd> Local </dd>
+</dl>
 
 ![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/pythonTask.png "Python Task")
 
+<dl>
 <dt> Save Changes </dt>
+</dl>
 
 ## Add the python task to a provisioning workflow.
+In Morpheus UI, Navigate to *Provisioning > Automation > workflow > Add > Provisioing Workflow*
 
-## Add a custome instance type of Centos and attach the workflow to the layout
+<dl>
+<dt> Name </dt>
+<dd> <i> Enter a name </i> </dd>
 
-## Create a execution schedule in Morpheus 
+<dt> Provision </dt>
+<dd> <i>Search for the python task and select</i></dd>
+</dl>
+
+![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/jobUpdateWorkflow.png "Provisionin workflow")
+<dl>
+<dt> Save Changes </dt>
+</dl>
+
+## Add a custom instance type of Centos and attach the workflow to the layout
+
+This [Video](https://d.pr/v/F4XWwG) demonstrates how to create:
+...*Instance type*
+...*Layout*
+...*Attach workflow to layout*
+...*Add node type to layout*
+
+## Create an execution schedule in Morpheus 
+
+In Morpheus UI, navigate to *Provisioning > Automation > Execute Scheduling > Add*
+
+<dl>
+<dt> Name </dt>
+<dd> <i> Enter a name </i> </dd>
+
+<dt>Time Zone</dt>
+<dd><i>Select a time zone</i></dd>
+
+<dt>Schedule</dt>
+<dd>45 23 29 * *</dt>
+
+</dl>
+
+![alt text](https://github.com/gomorpheus/morpheus-automation-examples/blob/main/src/common/images/executionSchedule.png  "Execution Schedule")
+<dl>
+<dt> Save Changes </dt>
+</dl>
 
 ## Create a Job in Morpheus with associated python Task to updateJob
 
+In Morpheus UI, navigate to *Provisioning > Automation > Jobs > Add*
+<dl>
+<dt> Name </dt>
+<dd> <i> Enter a name </i> </dd>
+
+<dt>Job Type</dt>
+<dd> Task Job</dd>
+
+**Click Next**
+
+<dt> Task </dt>
+<dd> Select the ansible task </dd>
+
+<dt> Schedule </dt>
+<dd> Select the schedule </dd>
+
+<dt> Context Type </dt>
+<dd> Select Instance </dd>
+
+<dt> Context Instance </dt>
+<dd> Serch for an existing instance and add temporarily </dd>
+
+**Click Next**
+
+**Click Complete**
+</dl>
+
 ## Add a cypher in morpheus of mount secret to store the DB password
 
+*Fetch the db password for the morpheus user from the morpheus-secrets.json file in /etc/morpheus/ directory*
+ In Morpheus UI, navigate to *Tools > Cypher > Add*
+
+ <dl>
+ <dt>Key</dt>
+ <dd>secret/secret/dbpass<dd>
+
+ <dt>Value</dt>
+ <dd><i>Paste the password fetch from the above file</i></dd>
+
+ <dt> Save Changes </dt>
+ <dl>
+
 ## Create patching table in morpheus DB
+
+*ssh* to Morpheus app server and run below to create table in morpheus db
+
+```
+/opt/morpheus/embedded/bin/mysql -h 127.0.0.1 -u morpheus -p
+mysql> use morpheus
+mysql> CREATE TABLE `patching` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `server_name` varchar(255) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `last_updated` datetime DEFAULT NULL,
+  `next_run` datetime DEFAULT NULL,
+  `result` varchar(255) DEFAULT NULL,
+  `os` varchar(255) DEFAULT NULL,
+  `env` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+```
 
 ## Upload the patching report plugin in Morpheus
 
 ## Provision an instance 
 
-## Execute the Ansible task to patch the Centos instance deployed
-
-## Run the ansible task on the instance
+## Execute the Ansible task on the instance to patch the Centos instance deployed
 
 ## Generate Report
