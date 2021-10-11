@@ -1,0 +1,39 @@
+plugins {
+    id "com.bertramlabs.asset-pipeline" version "3.3.2"
+    id "com.github.johnrengelman.plugin-shadow" version "2.0.3"
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+
+group = 'com.example'
+version = '1.2.2'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'com.morpheusdata:morpheus-plugin-api:0.8.0'
+    compileOnly 'org.codehaus.groovy:groovy-all:2.5.6'
+    compileOnly 'io.reactivex.rxjava2:rxjava:2.2.0'
+    compileOnly "org.slf4j:slf4j-api:1.7.26"
+    compileOnly "org.slf4j:slf4j-parent:1.7.26"
+}
+
+jar {
+    manifest {
+        attributes(
+            'Plugin-Class': 'com.morpheusdata.reports.ReportsPlugin', //Reference to Plugin class
+            'Plugin-Version': archiveVersion.get() // Get version defined in gradle
+        )
+    }
+}
+
+tasks.assemble.dependsOn tasks.shadowJar

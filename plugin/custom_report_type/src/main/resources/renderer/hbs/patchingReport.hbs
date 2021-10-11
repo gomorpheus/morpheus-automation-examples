@@ -1,0 +1,46 @@
+<div id="hypervisor-inventory-report">
+<div class="intro-stats">
+<h2>Overview</h2>
+<div class="count-stats">
+	<div class="stats-container">
+		<span class="big-stat">{{ header.0.dataMap.total_items }}</span>
+		<span class="stat-label">Items</span>
+	</div>
+	<div class="stats-container">
+		<span class="big-stat">{{ header.0.dataMap.success }}</span>
+		<div class="stat-label">Success</div>
+	</div>
+	<div class="stats-container">
+		<span class="big-stat">{{ header.0.dataMap.failed }}</span>
+		<div class="stat-label">Failed</div>
+	</div>
+</div>
+</div>
+<h2>Patching Results</h2>
+<table>
+	<thead>
+	<th>ID</th>
+	<th>Server Name</th>
+	<th>Date Created</th>
+	<th>Last Updated</th>
+	<th>Next Patching Date</th>
+	<th>Result</th>
+	<th>OS</th>
+	<th>Environment</th>
+	</thead>
+	<tbody>
+		{{#each main}}
+			<tr>
+				<td>{{dataMap.id}}</td>
+				<td>{{dataMap.server_name}}</td>
+				<td>{{dataMap.date_created}}</td>
+				<td>{{dataMap.last_updated}}</td>
+				<td>{{dataMap.next_run}}</td>
+				<td>{{dataMap.result}}</td>
+				<td>{{dataMap.os}}</td>
+				<td>{{dataMap.env}}</td>
+			</tr>
+		{{/each}}
+	</tbody>
+</table>
+</div>
