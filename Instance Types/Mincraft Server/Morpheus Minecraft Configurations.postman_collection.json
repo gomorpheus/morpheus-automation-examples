@@ -1,0 +1,1844 @@
+{
+	"info": {
+		"_postman_id": "228ac29a-2d01-4497-a6ba-d8d77fe95066",
+		"name": "Morpheus Minecraft Configurations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Configure Infrastructure",
+			"item": [
+				{
+					"name": "Create Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"var id = json.group.id\r",
+									"console.log(json.group.id)\r",
+									"pm.collectionVariables.set(\"group_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"group\":{\r\n        \"name\": \"VC Admins\",\r\n        \"description\": \"vCenter Admina Group\",\r\n        \"location\": \"All Ova\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/groups",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create vCenter Cloud",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = JSON.parse(responseBody);\r",
+									"var id = json.zone.id\r",
+									"console.log(json.zone.id)\r",
+									"pm.collectionVariables.set(\"zone_id\", id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"zone\":{\r\n        \"name\": \"vCenter\",\r\n        \"code\": \"vcenter\",\r\n        \"description\": \"Local vCenter\",\r\n        \"location\": \"Home\",\r\n        \"zoneType\": {\"code\": \"vmware\"},\r\n        \"groupId\": {{group_id}},\r\n        \"config\": {\r\n            \"apiUrl\": \"https://{{vcenter_url}}/sdk\",\r\n            \"username\": \"{{vcenter_user}}\",\r\n            \"password\": \"{{vcenter_pass}}\",\r\n            \"apiVersion\": \"7.0\",\r\n            \"datacenter\": \"Studio\",\r\n            \"cluster\": \"\",\r\n            \"resourcePoolId\": \"\",\r\n            \"resourcePool\": \"\",\r\n            \"rpcMode\": \"guestexec\",\r\n            \"hideHostSelection\": \"on\",\r\n            \"importExisting\": \"off\",\r\n            \"enableVnc\": null,\r\n            \"diskStorageType\": \"thin\",\r\n            \"datacenterName\": \"\",\r\n            \"securityServer\": \"off\",\r\n            \"certificateProvider\": \"internal\",\r\n            \"backupMode\": \"internal\",\r\n            \"replicationMode\": \"-1\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/zones",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"zones"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Run this folder if you need to add a group and vCenter cloud to your Morpheus appliance for testing this collection"
+		},
+		{
+			"name": "Create",
+			"item": [
+				{
+					"name": "Automation",
+					"item": [
+						{
+							"name": "Create Minecraft Install Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var json = JSON.parse(responseBody);\r",
+											"var id = json.task.id\r",
+											"console.log(json.task.id)\r",
+											"pm.collectionVariables.set(\"task_id\", id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"task\": {\r\n        \"name\": \"Install Minecraft Server\",\r\n        \"code\": \"installMinecraftServer\",\r\n        \"taskType\": {\r\n            \"code\": \"script\"\r\n    },\r\n    \"executeTarget\": \"resource\",\r\n    \"file\": {\r\n      \"sourceType\": \"repository\",\r\n      \"contentPath\": \"automation/install_minecraft.sh\",\r\n      \"contentRef\": \"main\",\r\n      \"repository\": {\r\n          \"id\": \"{{git_integration_id}}\"\r\n      }\r\n    }\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{morph_api}}/api/tasks",
+									"protocol": "https",
+									"host": [
+										"{{morph_api}}"
+									],
+									"path": [
+										"api",
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Minecraft Install Workflow",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var json = JSON.parse(responseBody);\r",
+											"var id = json.taskSet.id\r",
+											"console.log(json.taskSet.id)\r",
+											"pm.collectionVariables.set(\"taskSet_id\", id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"taskSet\": {\r\n    \"name\": \"Install Minecraft Server\",\r\n    \"tasks\": [\r\n      {\r\n        \"taskId\": {{task_id}},\r\n        \"taskPhase\": \"postProvision\"\r\n      }\r\n    ]\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{morph_api}}/api/task-sets",
+									"protocol": "https",
+									"host": [
+										"{{morph_api}}"
+									],
+									"path": [
+										"api",
+										"task-sets"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Library",
+					"item": [
+						{
+							"name": "File Templates",
+							"item": [
+								{
+									"name": "Create Minecraft EULA File Template",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.containerTemplate.id\r",
+													"console.log(json.containerTemplate.id)\r",
+													"pm.collectionVariables.set(\"eula_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"containerTemplate\": {\r\n        \"name\": \"Minecraft EULA\",\r\n        \"fileName\": \"eula.txt\",\r\n        \"filePath\": \"/opt/minecraft\",\r\n        \"templatePhase\": \"provision\",\r\n        \"fileOwner\": \"minecraft\",\r\n        \"settingName\": \"eula.txt\",\r\n        \"settingCategory\": \"Configuration\",\r\n        \"template\": \"eula=true\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/container-templates",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"container-templates"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Minecraft Service File Template",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.containerTemplate.id\r",
+													"console.log(json.containerTemplate.id)\r",
+													"pm.collectionVariables.set(\"service_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"containerTemplate\": {\r\n        \"name\": \"Minecraft Service\",\r\n        \"fileName\": \"minecraft.service\",\r\n        \"filePath\": \"/etc/systemd/system\",\r\n        \"templatePhase\": \"postProvision\",\r\n        \"fileOwner\": \"minecraft\",\r\n        \"settingName\": \"minecraft.service\",\r\n        \"settingCategory\": \"Service\",\r\n        \"template\": \"[Unit]\\nDescription=Start Minecraft\\nAfter=network.target\\n\\n[Service]\\nType=simple\\nUser=minecraft\\nExecStart=/usr/local/bin/start_minecraft_server.sh\\nExecStop=/usr/local/bin/minecraftd exit\\nTimeoutStartSec=30\\n\\n[Install]\\nWantedBy=default.target\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/container-templates",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"container-templates"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Minecraft Start Script File Template",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.containerTemplate.id\r",
+													"console.log(json.containerTemplate.id)\r",
+													"pm.collectionVariables.set(\"script_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"containerTemplate\": {\r\n        \"name\": \"Minecraft Start Script\",\r\n        \"fileName\": \"start_minecraft_server.sh\",\r\n        \"filePath\": \"/usr/local/bin\",\r\n        \"templatePhase\": \"postProvision\",\r\n        \"fileOwner\": \"minecraft\",\r\n        \"settingName\": \"start_minecraft_server.sh\",\r\n        \"settingCategory\": \"Service\",\r\n        \"template\": \"#!/usr/bin/env bash\\n\\n#Standard Minecraft\\ncd /opt/minecraft\\nexec java -Xmx6144M -Xms6144M -jar server.jar nogui\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/container-templates",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"container-templates"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Minecraft Server Properties File Template",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.containerTemplate.id\r",
+													"console.log(json.containerTemplate.id)\r",
+													"pm.collectionVariables.set(\"properties_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"containerTemplate\": {\r\n        \"name\": \"Minecraft Server Properties\",\r\n        \"fileName\": \"server.properties\",\r\n        \"filePath\": \"/opt/minecraft\",\r\n        \"templatePhase\": \"postProvision\",\r\n        \"fileOwner\": \"minecraft\",\r\n        \"settingName\": \"server.properties\",\r\n        \"settingCategory\": \"Configuration\",\r\n        \"template\": \"#Minecraft server properties\\nenable-rcon=true\\nbroadcast-rcon-to-ops=true\\nview-distance=10\\nmax-build-height=256\\nserver-ip=\\nlevel-seed=\\nrcon.port=25575\\ngamemode=<%=customOptions.mcGameMode%>\\nserver-port=<%=customOptions.mcPort%>\\nallow-nether=true\\nenable-command-block=true\\nenable-rcon=false\\nenable-query=false\\nop-permission-level=4\\nprevent-proxy-connections=false\\ngenerator-settings=\\nresource-pack=\\nlevel-name=world\\nrcon.password=<%=customOptions.mcPassword%>\\nplayer-idle-timeout=0\\nmotd=\\u00A7b\\u00A7oWelcome to the World of Tomorrow!!!\\nquery.port=25565\\nforce-gamemode=false\\nhardcore=false\\nwhite-list=false\\nbroadcast-console-to-ops=true\\npvp=true\\nspawn-npcs=true\\ngenerate-structures=true\\nspawn-animals=true\\nsnooper-enabled=true\\ndifficulty=easy\\nfunction-permission-level=2\\nnetwork-compression-threshold=256\\nlevel-type=default\\nsp\\nwn-monsters=true\\nmax-tick-time=60000\\nenforce-whitelist=false\\nuse-native-transport=true\\nmax-players=20\\nresource-pack-sha1=\\nspawn-protection=0\\nonline-mode=true\\nallow-flight=false\\nmax-world-size=29999984\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/container-templates",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"container-templates"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Minecraft Opped Users File Template",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.containerTemplate.id\r",
+													"console.log(json.containerTemplate.id)\r",
+													"pm.collectionVariables.set(\"opps_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"containerTemplate\": {\r\n        \"name\": \"Minecraft Default Opped Users\",\r\n        \"fileName\": \"ops.json\",\r\n        \"filePath\": \"/opt/minecraft\",\r\n        \"templatePhase\": \"postProvision\",\r\n        \"fileOwner\": \"minecraft\",\r\n        \"settingName\": \"ops.json\",\r\n        \"settingCategory\": \"Configuration\",\r\n        \"template\": \"[\\n  {\\n    'uuid': '{{op_user_uuid}}',\\n    'name': '{{op_user_name}}',\\n    'level': 4,\\n    'bypassesPlayerLimit': false\\n  }\\n]\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/container-templates",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"container-templates"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Option Lists",
+							"item": [
+								{
+									"name": "Create Minecraft Game Modes Option List",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.optionTypeList.id\r",
+													"console.log(json.optionTypeList.id)\r",
+													"pm.collectionVariables.set(\"game_modes_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"optionTypeList\": {\r\n    \"name\": \"Minecraft Game Modes\",\r\n    \"description\": \"Manual list of Minecraft game modes\",\r\n    \"type\": \"manual\",\r\n    \"initialDataset\": \"'survival','survival'\\n'creative','creative'\\n'adventure','adventure'\\n'spectator','spectator'\"\r\n  }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/option-type-lists",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"option-type-lists"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Minecraft Ports Option List",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.optionTypeList.id\r",
+													"console.log(json.optionTypeList.id)\r",
+													"pm.collectionVariables.set(\"ports_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"optionTypeList\": {\r\n    \"name\": \"Minecraft Ports\",\r\n    \"description\": \"Manual List of Ports for the Server to Run On\",\r\n    \"type\": \"manual\",\r\n    \"initialDataset\": \"'25565','25565'\\n'25566','25566'\\n'25567','25567'\\n'25568','25568'\\n'25569','25569'\"\r\n  }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/option-type-lists",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"option-type-lists"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Minecraft Versions Option List",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.optionTypeList.id\r",
+													"console.log(json.optionTypeList.id)\r",
+													"pm.collectionVariables.set(\"versions_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"optionTypeList\": {\r\n    \"name\": \"Minecraft Versions\",\r\n    \"description\": \"Rest call to display available versions of Minecraft to Install\",\r\n    \"type\": \"rest\",\r\n    \"sourceUrl\": \"https://launchermeta.mojang.com/mc/game/version_manifest.json\",\r\n    \"ignoreSSLErrors\": true,\r\n    \"realTime\": true,\r\n    \"sourceMethod\": \"GET\",\r\n    \"initialDataset\": null,\r\n    \"translationScript\": \"for(var x=0;x < data.versions.length; x++) {\\n  results.push({name: data.versions[x].id, value:data.versions[x].url});\\n}\"\r\n  }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/option-type-lists",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"option-type-lists"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Option Types",
+							"item": [
+								{
+									"name": "Create Minecraft Game Mode Option Type",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.optionType.id\r",
+													"console.log(json.optionType.id)\r",
+													"pm.collectionVariables.set(\"game_mode_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"Minecraft Game Mode\",\r\n       \"description\": \"Option for the Minecraft Game Mode\",\r\n       \"fieldName\": \"mcGameMode\",\r\n       \"type\": \"select\",\r\n       \"fieldLabel\": \"Select Game Mode\",\r\n       \"defaultValue\": \"survival\",\r\n       \"helpBlock\": \"Pick your desired game mode\",\r\n       \"required\": true,\r\n       \"exportMeta\": true,\r\n       \"optionList\": {\r\n           \"id\": \"{{game_modes_id}}\"\r\n       }\r\n     }}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/option-types",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"option-types"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Minecraft Port Option Type",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.optionType.id\r",
+													"console.log(json.optionType.id)\r",
+													"pm.collectionVariables.set(\"port_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"Minecraft Port\",\r\n       \"description\": \"Option for the Minecraft Server Port\",\r\n       \"fieldName\": \"mcPort\",\r\n       \"type\": \"select\",\r\n       \"fieldLabel\": \"Port\",\r\n       \"defaultValue\": \"25565\",\r\n       \"helpBlock\": \"Pick your desired server port\",\r\n       \"required\": true,\r\n       \"exportMeta\": true,\r\n       \"optionList\": {\r\n           \"id\": \"{{ports_id}}\"\r\n       }\r\n     }}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/option-types",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"option-types"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Minecraft Version Option Type",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.optionType.id\r",
+													"console.log(json.optionType.id)\r",
+													"pm.collectionVariables.set(\"version_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"optionType\": {\r\n       \"name\": \"Minecraft Version\",\r\n       \"description\": \"Option for the Minecraft Server Version\",\r\n       \"fieldName\": \"mcVersion\",\r\n       \"type\": \"select\",\r\n       \"fieldLabel\": \"Version\",\r\n       \"helpBlock\": \"Pick your desired server version\",\r\n       \"required\": true,\r\n       \"exportMeta\": true,\r\n       \"optionList\": {\r\n           \"id\": \"{{versions_id}}\"\r\n       }\r\n     }}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/option-types",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"option-types"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Instance Type",
+							"item": [
+								{
+									"name": "Create Minecraft Instance Type",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.instanceType.id\r",
+													"console.log(json.instanceType.id)\r",
+													"pm.collectionVariables.set(\"instance_type_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"instanceType\": {\r\n    \"name\": \"Minecraft Server\",\r\n    \"code\": \"mcServer\",\r\n    \"description\": \"Minecraft Server Instance Type\",\r\n    \"category\": \"apps\",\r\n    \"visibility\": \"public\",\r\n    \"environmentPrefix\": \"MC_\",\r\n    \"hasSettings\": true,\r\n    \"hasAutoScale\": false,\r\n    \"hasDeployment\": false,\r\n    \"optionTypes\": [\r\n        {{version_id}},\r\n        {{game_mode_id}},\r\n        {{port_id}}\r\n    ]\r\n  }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/instance-types",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"instance-types"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Minecraft Instance Node Type",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var json = JSON.parse(responseBody);\r",
+													"var id = json.containerType.id\r",
+													"console.log(json.containerType.id)\r",
+													"pm.collectionVariables.set(\"node_id\", id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"containerType\": {\r\n    \"name\": \"MC on CentOS7\",\r\n    \"shortName\": \"mcOnCent7\",\r\n    \"containerVersion\": \"1.0\",\r\n    \"provisionTypeCode\": \"vmware\",\r\n    \"templates\": [\r\n        {{eula_id}},\r\n        {{opps_id}},\r\n        {{service_id}},\r\n        {{script_id}},\r\n        {{properties_id}}\r\n    ],\r\n    \"virtualImageId\": 183,\r\n    \"mountLogs\": null,\r\n    \"mountData\": null,\r\n    \"statTypeCode\": \"vmware\",\r\n    \"logTypeCode\": \"vmware\",\r\n    \"serverType\": \"vm\",\r\n    \"config\": {\r\n    }\r\n  }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/container-types",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"container-types"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Minecraft Instance Layout",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"//pm.collectionVariables.unset(\"node_id\");\r",
+													"//pm.collectionVariables.unset(\"game_modes_id\");\r",
+													"//pm.collectionVariables.unset(\"ports_id\");\r",
+													"//pm.collectionVariables.unset(\"versions_id\");\r",
+													"//pm.collectionVariables.unset(\"task_id\");\r",
+													"//pm.collectionVariables.unset(\"game_mode_id\");\r",
+													"//pm.collectionVariables.unset(\"port_id\");\r",
+													"//pm.collectionVariables.unset(\"version_id\");\r",
+													"//pm.collectionVariables.unset(\"instance_type_id\");\r",
+													"//pm.collectionVariables.unset(\"eula_id\");\r",
+													"//pm.collectionVariables.unset(\"service_id\");\r",
+													"//pm.collectionVariables.unset(\"script_id\");\r",
+													"//pm.collectionVariables.unset(\"properties_id\");\r",
+													"//pm.collectionVariables.unset(\"opps_id\");\r",
+													"//pm.collectionVariables.unset(\"layout_id\");\r",
+													"//pm.collectionVariables.unset(\"taskSet_id\");\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"instanceTypeLayout\": {\r\n    \"name\": \"Single\",\r\n    \"instanceVersion\": \"1.0\",\r\n    \"description\": \"Minecraft Single Server\",\r\n    \"creatable\": true,\r\n    \"provisionTypeCode\": \"vmware\",\r\n    \"memoryRequirement\": \"8000\",\r\n    \"hasAutoScale\": false,\r\n    \"supportsConvertToManaged\": false,\r\n    \"containerTypes\": [\r\n      {{node_id}}\r\n    ],\r\n    \"taskSetId\": {{taskSet_id}},\r\n    \"permissions\": {\r\n      \"resourcePermissions\": {\r\n        \"all\":true\r\n      }\r\n  }\r\n}\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://{{morph_api}}/api/library/instance-types/:instanceTypeId/layouts",
+											"protocol": "https",
+											"host": [
+												"{{morph_api}}"
+											],
+											"path": [
+												"api",
+												"library",
+												"instance-types",
+												":instanceTypeId",
+												"layouts"
+											],
+											"variable": [
+												{
+													"key": "instanceTypeId",
+													"value": "{{instance_type_id}}",
+													"description": "ID variable set by creation of the instance type"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			],
+			"description": "If you run from this folder, Postman will create all of the construct needed for deploying a Minecraft server from Morpheus."
+		},
+		{
+			"name": "Delete",
+			"item": [
+				{
+					"name": "Delete Instance Type and Layout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"instance_type_id\");\r",
+									"pm.collectionVariables.unset(\"layout_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/instance-types/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"instance-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{instance_type_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Node Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"node_id\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/container-type/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"container-type",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{node_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Option Type: Game Mode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"game_mode_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-types/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{game_mode_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Option Type: Port",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"port_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-types/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{port_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Option Type: Version",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"version_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-types/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{version_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Option List: Game Modes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"game_modes_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-type-lists/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-type-lists",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{game_modes_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Option List: Ports",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"ports_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-type-lists/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-type-lists",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{ports_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Option List: Versions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"versions_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/option-type-lists/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"option-type-lists",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{versions_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File Template: EULA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"eula_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/container-templates/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"container-templates",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{eula_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File Template: Service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"service_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/container-templates/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"container-templates",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{service_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File Template: Opps",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"opps_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/container-templates/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"container-templates",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{opps_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File Template: Properties",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"properties_id\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/container-templates/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"container-templates",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{properties_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File Template: Script",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"script_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/library/container-templates/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"library",
+								"container-templates",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{script_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"taskSet_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/task-sets/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"task-sets",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{taskSet_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset(\"task_id\");\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{morph_api}}/api/tasks/:id",
+							"protocol": "https",
+							"host": [
+								"{{morph_api}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{task_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Run from this folder to delete all of the Minecraft constructs from Morpheus"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{morph_bearer}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "morph_api",
+			"value": ""
+		},
+		{
+			"key": "morph_bearer",
+			"value": ""
+		},
+		{
+			"key": "git_integration_id",
+			"value": ""
+		},
+		{
+			"key": "op_user_name",
+			"value": ""
+		},
+		{
+			"key": "op_user_uuid",
+			"value": ""
+		},
+		{
+			"key": "vcenter_url",
+			"value": ""
+		},
+		{
+			"key": "vcenter_user",
+			"value": ""
+		},
+		{
+			"key": "vcenter_pass",
+			"value": ""
+		}
+	]
+}
