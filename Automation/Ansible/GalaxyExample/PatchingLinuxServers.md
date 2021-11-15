@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-# Patching Linux servers using Ansible with Morpheus to report on the Patching data.
-=======
 # Patching Linux servers using Anisble and use Morpheus to report on the Patching data.
->>>>>>> 70b2af69970a4e6126170e277da089d61f346228
+
 
 ### Use Case:
 When a user deploys an instance *in this use case we are referring to Centos 7* from Morpheus, based on the Operating system and version the instance should be added to a patching job. The job is scheduled to run on the 29th of every month at 23:45hrs. The job runs an ansible playbook on all the servers attached, the play patching the OS to latest verion. The patching results (success, failed, noChanges) are then recorded in Morpheus. A custom report type (report template) is added to generate a report on the patching results.
