@@ -1,4 +1,4 @@
-# Patching Linux servers using Anisble and use Morpheus to report on the Patching data.
+# Patching Linux servers using Ansible and use Morpheus to report on the Patching data.
 
 
 ### Use Case:
