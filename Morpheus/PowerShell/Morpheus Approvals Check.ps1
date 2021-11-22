@@ -134,7 +134,7 @@ foreach ($Approval in $Approvals) {
 if ($HasApprovals -eq 0) {
     write-host "No NEW Approvals Pending..."
     write-host "Exiting"
-    exit 0
+    exit 1
 }
  
 EOF
