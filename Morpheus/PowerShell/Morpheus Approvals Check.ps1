@@ -1,6 +1,3 @@
-#!/usr/bin/env pwsh
-pwsh -c - <<'EOF'
-
 <#
     .SYNOPSIS
         This Script checks for pending approvals in Morpheus
@@ -119,5 +116,3 @@ else {
         exit 1
     }
 }
-
-EOF
