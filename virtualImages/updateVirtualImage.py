@@ -1,13 +1,18 @@
 import requests
 import json
+import warnings
+warnings.filterwarnings("ignore")
 
+"""
+This script will go through the virtual images name provided in line 11 and set the Force guest Customization check to false"
+"""
 bearerToken=morpheus['morpheus']['apiAccessToken']
 host = morpheus['morpheus']['applianceHost']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "Bearer " + (bearerToken)} 
 
 updateGuestCustomization = ['DGSPPJW1001-1620993814000','DGSPPJW1001-1620993937000','DGSPPJW1001-1620995380000']
 
-def getVIId():
+def updateVI():
     for x in updateGuestCustomization:
         url="https://%s/api/virtual-images?phrase=%s" % (host, x)
         r = requests.get(url, headers=headers, verify=False)
@@ -28,7 +33,7 @@ def getVIId():
 
 
 def main():
-    getVIId()
+    updateVI()
 
 
 if __name__ == "__main__":
