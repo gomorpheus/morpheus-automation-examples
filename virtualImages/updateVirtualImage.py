@@ -10,6 +10,7 @@ bearerToken=morpheus['morpheus']['apiAccessToken']
 host = morpheus['morpheus']['applianceHost']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "Bearer " + (bearerToken)} 
 
+memory="4" ## In gb
 updateGuestCustomization = ['DGSPPJW1001-1620993814000','DGSPPJW1001-1620993937000','DGSPPJW1001-1620995380000']
 
 def updateVI():
@@ -19,9 +20,9 @@ def updateVI():
         data = r.json()
         vId=str(data['virtualImages'][0]['id'])
         vName=data['virtualImages'][0]['name']
-        print("Updating guest customization of Virtual Image " + vName + " with associated ID: " + vId)
+        print("Updating guest customization of Virtual Image " + vName + " with associated ID: " + vId + " False, Set minimum memory to 4 GB, Virtio Drivers disabled and VMware tools installed set to be true.")
         updateurl="https://%s/api/virtual-images/%s" % (host, vId)
-        b={"virtualImage": {"isForceCustomization": False}}
+        b={"virtualImage": {"isForceCustomization": False, "minRamGB": memory, "virtioSupported": False, "vmToolsInstalled": True }}
         body=json.dumps(b)
         ur = requests.put(updateurl, headers=headers, data=body, verify=False)
         udata=ur.json()
