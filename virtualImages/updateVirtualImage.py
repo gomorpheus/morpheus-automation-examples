@@ -4,7 +4,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 """
-This script will go through the virtual images name provided in line 11 and set the Force guest Customization check to false"
+This script will go through the virtual images name provided in line 14 and set the Force guest Customization check to false, set memory to 4gb as provided in line 13, disable virtio drivers and enable vmwae tools installed."
 """
 bearerToken=morpheus['morpheus']['apiAccessToken']
 host = morpheus['morpheus']['applianceHost']
