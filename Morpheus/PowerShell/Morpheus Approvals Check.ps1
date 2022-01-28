@@ -1,6 +1,3 @@
-#!/usr/bin/env pwsh
-pwsh -c - <<'EOF'
- 
 <#
     .SYNOPSIS
         This Script checks for pending approvals in Morpheus - it has been adapted to work for applications
@@ -136,5 +133,3 @@ if ($HasApprovals -eq 0) {
     write-host "Exiting"
     exit 1
 }
- 
-EOF
