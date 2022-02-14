@@ -28,18 +28,21 @@ Cred Payload:
         ]
     }
 
-.PARAMETER morphURL
-Specifies the Morpheus URL FQDN
 
 .PARAMETER vCenterCreds
 Specifies the Cypher secret for vCenter(s) in JSON format
+
+.PARAMETER VMs
+Specifices each Hostname of nested VMs
+
+.PARAMETER Instance
+Specifies the Instance Name for Rule Creation
 
 #>
 
 $ProgressPreference = "SilentlyContinue"
 
 #Input Variables
-$morphURL = '<%=morpheus.applianceUrl%>'
 $VMs = '<%=instance.containers.hostname%>'
 $Instance = '<%=instance.name%>'
 $vCenterCreds = "<%=cypher.read('secret/' + zone.code)%>"
