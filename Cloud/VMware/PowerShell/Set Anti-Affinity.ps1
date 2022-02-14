@@ -29,20 +29,16 @@ Cred Payload:
     }
 
 .PARAMETER morphURL
-Specifies the Role ID to filter on
-
-.PARAMETER serviceBearer
-Specifies the User ID to filter on
+Specifies the Morpheus URL FQDN
 
 .PARAMETER vCenterCreds
-Specifies the Group ID to filter on
+Specifies the Cypher secret for vCenter(s) in JSON format
 
 #>
 
 $ProgressPreference = "SilentlyContinue"
 
 #Input Variables
-$serviceBearer = "<%=cypher.read('secret/Bearer')%>"
 $morphURL = '<%=morpheus.applianceUrl%>'
 $VMs = '<%=instance.containers.hostname%>'
 $Instance = '<%=instance.name%>'
