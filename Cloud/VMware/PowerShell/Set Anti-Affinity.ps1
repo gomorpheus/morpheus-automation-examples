@@ -1,49 +1,51 @@
-﻿#! /usr/bin/pwsh
+﻿<#
+.SYNOPSIS
+This Script configures a VMware anti-affinity rules for Instances deployed via Morpheus
 
-<#
-    .SYNOPSIS
-        This Script configures a VMware anti-affinity rules for Instances deployed via Morpheus
-    
-    .DESCRIPTION
-        Steps to initiate Anti-Affinity Creation
-        1. Create PowerShell Task and associate it with a Provisioning Workflow
-        2. Attach Workflow to Instance Type, or leave user selectable
-        3. Create a JSON Cypher for each vCenter with the code of the Cloud (This will utilize zone.code)
-        4. Install PowerShell core on the Morpheus FE Servers
-        5. Install PowerCLI (Must be scoped allusers) on the Morpheus FE Servers
-        6. Launch PowerCLI once and set agree to the PowerCLI terms        
-        7. Deploy instance. If it has more than a single VM, it will create an anti-affinity rule.
-    
-    .EXAMPLE
-        1. Local Shell Script Referencing a GIT Repo
-        2. Command Example:
-            pwsh -file 'path/file.ps1' -morphURL '<%=morpheus.applianceUrl%>' -serviceBearer "<%=cypher.read('secret/Bearer')%>"
-            -vCenterCreds "<%=cypher.read('secret/' + zone.code)%>" -VMs "<%=instance.containers.hostname%>" -Instance "<%=instance.name%>"
-        3. Cred Payload:
+.DESCRIPTION
+Utilizes the Morpheus FE servers as a PowerShell Core/PowerCLI host.  When more than 1 VM is deployed, an anti-affinity rule is created on the cluster to ensure the VMs are seperated.
+
+See notes for additional details on how to configure the task in Morpheus.
+
+.NOTES
+1. Create Local PowerShell Task and associate it with a Provisioning Workflow
+2. Attach Workflow to Instance Type, or leave user selectable
+3. Create a JSON Cypher for each vCenter with the code of the Cloud (This will utilize zone.code Morpheus variable)
+4. Install PowerShell core on the Morpheus FE Servers
+5. Install PowerCLI (Must be scoped allusers) on the Morpheus FE Servers
+6. Launch PowerCLI once and set agree to the PowerCLI terms        
+7. Deploy instance. If it has more than a single VM, it will create an anti-affinity rule.
+
+.EXAMPLE
+Cred Payload:
+    {
+    'clouds': [
             {
-            'clouds': [
-                    {
-                    'url':'ipaddress',
-                    'user':'username',
-                    'password':'mypassword'
-                    }
-                ]
+            'url':'ipaddress',
+            'user':'username',
+            'password':'mypassword'
             }
+        ]
+    }
 
-    .ExitCodes
-        0 - Job Completed Successfully
+
+.PARAMETER vCenterCreds
+Specifies the Cypher secret for vCenter(s) in JSON format
+
+.PARAMETER VMs
+Specifices each Hostname of nested VMs
+
+.PARAMETER Instance
+Specifies the Instance Name for Rule Creation
+
 #>
 
-### Params ###
-Param (
-    [Parameter(Mandatory = $true)]$serviceBearer,
-    [Parameter(Mandatory = $true)]$morphURL,
-    [Parameter(Mandatory = $true)]$VMs,
-    [Parameter(Mandatory = $true)]$Instance,
-    [Parameter(Mandatory = $true)]$vCenterCreds
-)
-
 $ProgressPreference = "SilentlyContinue"
+
+#Input Variables
+$VMs = '<%=instance.containers.hostname%>'
+$Instance = '<%=instance.name%>'
+$vCenterCreds = "<%=cypher.read('secret/' + zone.code)%>"
 
 #vCenter Variables
 $vCenterCreds = $vCenterCreds | convertfrom-json | select -expandproperty clouds
