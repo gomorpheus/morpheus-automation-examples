@@ -1,30 +1,12 @@
-import groovy.json.*
-
-// the JSON pasted body
-def jsonBody = customOptions.fjJSONBody
-
+// The script will set the disk label at the instance level to root for root disk if the name is not root
 def computeServerObj = com.morpheus.ComputeServer.get(server.id)
-
-//get current server volume information ordered by the displayOrder
 def serverVolumes = computeServerObj.volumes?.sort { it.displayOrder }
-
-// capture & parse the JSON to a list
-def data = new JsonSlurper().parseText(jsonBody)
-
-// iterate the list
-for (int i = 0; i < data.disks.size(); i++) {
-    def disk = data.disks[i]
-    for (int ii = 0; ii < serverVolumes.size(); ii++) {
-        def volume = serverVolumes[ii]
-        def morphMount = volume.getMountPointName()
-        if (disk.mount == morphMount) {
-            // inspect the volume name and compared to required (disk.label)
-            if (volume.name != disk.label) {
+for (int i = 0; i < 1; i++) {
+        def volume = serverVolumes[i]
+            if (volume.name != "root") {
                 // change and save
-                println "Renaming mount point : `${morphMount}` to `${disk.label}`"
-                volume.name = disk.label
+                volume.name = "root"
+                println "Renaming mount point : ${volume.name}"
                 volume.save(flush:true, failOnError:true)
             }
-        }
     }
-}
