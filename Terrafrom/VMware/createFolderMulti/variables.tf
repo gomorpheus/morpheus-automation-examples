@@ -1,0 +1,1 @@
+variable "folder_name" {}

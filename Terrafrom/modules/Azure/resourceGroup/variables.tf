@@ -1,0 +1,3 @@
+variable "resourceGroup" {}
+
+variable "region" {}
