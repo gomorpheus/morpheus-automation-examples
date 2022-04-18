@@ -1,4 +1,4 @@
-resource "aws_security_group" "morpheus_aio_sg" {
+resource "aws_security_group" "morpheus_sg" {
   name   = var.sec_group_name
   vpc_id = var.vpc
 
@@ -51,7 +51,7 @@ resource "aws_instance" "morpheus" {
    - <%=instance.cloudConfig.finalizeServer%>
    EOF
 
-  vpc_security_group_ids = [aws_security_group.morpheus_aio_sg.id]
+  vpc_security_group_ids = [aws_security_group.morpheus_sg.id]
   root_block_device {
     delete_on_termination = true
     volume_size           = 50
@@ -61,7 +61,7 @@ resource "aws_instance" "morpheus" {
   }
 
 
-  depends_on = [aws_security_group.morpheus_aio_sg]
+  depends_on = [aws_security_group.morpheus_sg]
 }
 
 data "aws_subnets" "subnets" {
