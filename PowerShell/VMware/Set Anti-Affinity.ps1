@@ -85,8 +85,14 @@ if ($ServerName -eq $VMs[-1]) {
         #Creation of Affinity Group
         $AFGCluster = $Affinity.Cluster[0]
         $Server = $Affinity.VM.vCenter[0]
+        
+        Write-Host "Creating Anti-Affinity Group $($AFGCluster + '-' + $Instance)" -ForegroundColor Cyan
         New-DrsRule -Name ($AFGCluster + '-' + $Instance) -VM $Affinity.VM -Server $Server -Cluster $AFGCluster -KeepTogether $false -Enabled $true
+    } else {
+        Write-Host "Only 1 server in instance!..." -ForegroundColor Cyan
     }
+} else {
+    Write-Host "Job runs only once!" -ForegroundColor Green
 }
 
 $LASTEXITCODE
