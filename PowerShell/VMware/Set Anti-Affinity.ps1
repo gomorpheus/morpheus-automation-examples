@@ -43,9 +43,11 @@ Specifies the Instance Name for Rule Creation
 $ProgressPreference = "SilentlyContinue"
 
 #Input Variables
-$VMs = '<%=instance.containers.hostname%>'
+$VMs = '<%=instance.containers.server.name%>'
+$VMs = $VMs.Replace("[","").Replace("]","").Split(",").TrimStart(" ") | sort-object
 $Instance = '<%=instance.name%>'
 $vCenterCreds = "<%=cypher.read('secret/' + zone.code)%>"
+$ServerName = '<%=server.name%>'
 
 #vCenter Variables
 $vCenterCreds = $vCenterCreds | convertfrom-json | select -expandproperty clouds
@@ -54,36 +56,37 @@ $vUser = $vCenterCreds.user
 $vCreds = New-Object System.Management.Automation.PSCredential($vUser,$vPass)
 $vCenters = $vCenterCreds.url
 
-#Morpheus Variables
-$VMs = $VMs.Replace("[","").Replace("]","").Split(",").TrimStart(" ")
-$Affinity = @()
+if ($ServerName -eq $VMs[-1]) {
 
-if ($VMs.count -gt 1) {
+    $Affinity = @()
 
-    #Connect to vCenter(s)
-    foreach($vCenter in $vCenters) {
-    connect-viserver $vCenter -Credential $vCreds
+    if ($VMs.count -gt 1) {
+
+        #Connect to vCenter(s)
+        foreach($vCenter in $vCenters) {
+        connect-viserver $vCenter -Credential $vCreds
+        }
+
+        #Create vCenter Property
+        New-VIProperty -Name vCenter -ObjectType VirtualMachine -Value {$Args[0].uid.split(":")[0].split("@")[1]}
+
+        foreach ($VM in $VMs) {
+            #Variables
+            $vmwareVM = Get-VM $VM
+            $Cluster = Get-Cluster -VM $vmwareVM | Select -ExpandProperty Name
+            $obj = New-Object psobject
+
+            #Add Property to Array
+            $obj | Add-Member -MemberType NoteProperty -Name VM -Value $vmwareVM -Force
+            $obj | Add-Member -MemberType NoteProperty -Name Cluster -Value $Cluster -Force
+            $Affinity += $obj
+        }
+
+        #Creation of Affinity Group
+        $AFGCluster = $Affinity.Cluster[0]
+        $Server = $Affinity.VM.vCenter[0]
+        New-DrsRule -Name ($AFGCluster + '-' + $Instance) -VM $Affinity.VM -Server $Server -Cluster $AFGCluster -KeepTogether $false -Enabled $true
     }
-
-    #Create vCenter Property
-    New-VIProperty -Name vCenter -ObjectType VirtualMachine -Value {$Args[0].uid.split(":")[0].split("@")[1]}
-
-    foreach ($VM in $VMs) {
-        #Variables
-        $vmwareVM = Get-VM $VM
-        $Cluster = Get-Cluster -VM $vmwareVM | Select -ExpandProperty Name
-        $obj = New-Object psobject
-
-        #Add Property to Array
-        $obj | Add-Member -MemberType NoteProperty -Name VM -Value $vmwareVM -Force
-        $obj | Add-Member -MemberType NoteProperty -Name Cluster -Value $Cluster -Force
-        $Affinity += $obj
-    }
-
-    #Creation of Affinity Group
-    $AFGCluster = $Affinity.Cluster[0]
-    $Server = $Affinity.VM.vCenter[0]
-    New-DrsRule -Name ($AFGCluster + '-' + $Instance) -VM $Affinity.VM -Server $Server -Cluster $AFGCluster -KeepTogether $false -Enabled $true
 }
 
 $LASTEXITCODE
