@@ -71,7 +71,7 @@ if ($ServerName -eq $VMs[-1]) {
         }
 
         #Create vCenter Property
-        New-VIProperty -Name vCenter -ObjectType VirtualMachine -Value {$Args[0].uid.split(":")[0].split("@")[1]}
+        New-VIProperty -Name vCenter -ObjectType VirtualMachine -Value {$Args[0].uid.split(":")[0].split("@")[1]} | out-null
 
         foreach ($VM in $VMs) {
             #Variables
