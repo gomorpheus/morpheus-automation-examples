@@ -63,8 +63,9 @@ if ($ServerName -eq $VMs[-1]) {
     if ($VMs.count -gt 1) {
 
         #Connect to vCenter(s)
+        Write-Host "Connecting to vCenter(s)..." -ForegroundColor Cyan
         foreach($vCenter in $vCenters) {
-        connect-viserver $vCenter -Credential $vCreds
+        connect-viserver $vCenter -Credential $vCreds | out-null
         }
 
         #Create vCenter Property
@@ -87,12 +88,13 @@ if ($ServerName -eq $VMs[-1]) {
         $Server = $Affinity.VM.vCenter[0]
         
         Write-Host "Creating Anti-Affinity Group $($AFGCluster + '-' + $Instance)" -ForegroundColor Cyan
-        New-DrsRule -Name ($AFGCluster + '-' + $Instance) -VM $Affinity.VM -Server $Server -Cluster $AFGCluster -KeepTogether $false -Enabled $true
+        New-DrsRule -Name ($AFGCluster + '-' + $Instance) -VM $Affinity.VM -Server $Server -Cluster $AFGCluster -KeepTogether $false -Enabled $true | out-null
+        Write-Host "Completed!" -ForegroundColor Green
     } else {
         Write-Host "Only 1 server in instance!..." -ForegroundColor Cyan
     }
 } else {
-    Write-Host "Job runs only once!" -ForegroundColor Green
+    Write-Host "Job runs only once!" -ForegroundColor Yellow
 }
 
 $LASTEXITCODE
