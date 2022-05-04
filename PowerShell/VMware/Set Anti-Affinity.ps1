@@ -56,6 +56,8 @@ $vUser = $vCenterCreds.user
 $vCreds = New-Object System.Management.Automation.PSCredential($vUser,$vPass)
 $vCenters = $vCenterCreds.url
 
+Write-Host "Execution Server $ServerName" -ForegroundColor White
+
 if ($ServerName -eq $VMs[-1]) {
 
     $Affinity = @()
