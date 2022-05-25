@@ -21,9 +21,9 @@ def getalldiscoveredvms():
     else:
         print("Total number of discovered servers "+ str(l) + ".\n")
         for i in range(0, l):
-            existingPlans=['12,13']
-            if data['servers'][i]['plan']['id'] in existingPlans:
-                print("VM is running with an existing plan.")
+            existingPlans=['12','13']
+            if str(data['servers'][i]['plan']['id']) in existingPlans:
+                print("VM " + data['servers'][i] + " is running with an existing plan.")
             else:
                 print("Plan for VM "+ data['servers'][i]['name'] + " is " + str(data['servers'][i]['plan']['name']) + " and the id of the plan is " + str(data['servers'][i]['plan']['id']) + ".\nRemoving the discovered VM " + data['servers'][i]['name'] + " from morpheus without deleting the VM infrastructure. Upon Cloud sync the VM will be back in morpheus as discovered type VM." )
                 url="https://%s/api/servers/%s?removeResources=off" % (host,data['servers'][i]['id'])

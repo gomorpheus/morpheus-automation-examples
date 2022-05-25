@@ -1,12 +1,13 @@
 import requests
 import json
 from morpheuscypher import Cypher
+## This would create the cmdb CI and updated the default fields that morpheus does as part fo the native intergation. To update custom field use cmdbCIUpdates.py script.
 #c = Cypher(morpheus=morpheus,ssl_verify=False)
 cypass=morpheus['results']['svccypher']
 cypass=cypass.replace('\r', '').replace('\n', '')
 #Check if CI exist or not
  
-serviceNowInstanceName="regionetoscanatest.service-now.com"
+serviceNowInstanceName="xxx"
 layoutCode=morpheus['instance']['provisionType']
 # Set the request parameters
 if "vmware" in layoutCode:
