@@ -1,7 +1,5 @@
 import requests
 
-import requests
-
 # define vars for API
 host=morpheus['morpheus']['applianceHost']
 token=morpheus['morpheus']['apiAccessToken']
