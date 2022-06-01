@@ -1,12 +1,22 @@
-import requests
+import requests, urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 # define vars for API
 host=morpheus['morpheus']['applianceHost']
 token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
+bid = None
+
+def removeBuckets(bid):
+    url="https://%s/api/storage/buckets/%s" % (host,bid)
+    r = requests.delete(url, headers=headers, verify=False)
+    if r.status_code != 200:
+        print('Status:', r.status_code, 'Headers:', r.headers, 'Error Response:',r.json())
+        exit()
 
 def getBuckets():
-    url="https://%s/api/storage/buckets" % (host)
+    url="https://%s/api/storage/buckets?max=200" % (host)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
     l = len(data['storageBuckets'])
@@ -19,9 +29,9 @@ def getBuckets():
             if bucketType == "google":
                 print("Bucket " + str(data['storageBuckets'][i]['name']) + " found of type Google Cloud Storage bucket.")
                 print("Removing the bucket " + (data['storageBuckets'][i]['name']))
-
-def removeBuckets():
-    url="https://%s/api/storage/buckets" % (host)
+                bid = data['storageBuckets'][i]['id']
+                removeBuckets(str(bid))
 
 # Main
 getBuckets()
+
