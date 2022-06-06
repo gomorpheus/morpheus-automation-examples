@@ -12,3 +12,5 @@ python clean_repos.py
 # to actually delete the extra files
 python clean_repos.py doit
 ```
+
+## Please use at your own risk
