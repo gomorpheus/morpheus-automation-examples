@@ -11,9 +11,9 @@ i.shutdownRenewDays = shutdownRenewalDays
 i.shutdownWarningDate = new Date().plus((extendDays - extendWarningDays))
 
 try {
-	i.save(flush:true)
+    i.save(flush:true)
     println "Success!"
 } catch(e) {
-	println "Failure!"
+    println "Failure!"
 }
 
