@@ -79,6 +79,8 @@ def getDiscoveredVM():
             print(f"VM Zoneid: {vmZoneId}")
             vmZoneName = data['servers'][i]['zone']['name']
             print(f"VM Zone Name: {vmZoneName}")
+            vmobject = json.dumps(data['servers'][i], indent=2)
+            print(vmobject)
             # Search all price sets where the zoneId matches. This is to make sure that this discovered vm will be assigned a plan which is dedicated to its cloud.
             matchPriceSetforZoneId(vmZoneId, vmZoneName, vmName, vmId)
 
