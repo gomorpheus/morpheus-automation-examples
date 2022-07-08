@@ -54,6 +54,7 @@ def matchPriceSetforZoneId(zoneId, zoneName, vmName, vmId):
     if l is None:
         print("No priceset found with name starts with NA. \n")
     else:
+        print(f'Price Set found: {data['priceSets']}')
         for i in range(0, l):
             if zoneId == data['priceSets'][i]['zone']['id']:
                 print(f"Price set { data['priceSets'][i]['name'] } is mapped to cloud { zoneName } for vm { vmName }. Now we need to get the right plan for vm { vmName }.\n " )
@@ -79,8 +80,8 @@ def getDiscoveredVM():
             print(f"VM Zoneid: {vmZoneId}")
             vmZoneName = data['servers'][i]['zone']['name']
             print(f"VM Zone Name: {vmZoneName}")
-            vmobject = json.dumps(data['servers'][i], indent=2)
-            print(vmobject)
+            # vmobject = json.dumps(data['servers'][i], indent=2)
+            # print(vmobject)
             # Search all price sets where the zoneId matches. This is to make sure that this discovered vm will be assigned a plan which is dedicated to its cloud.
             matchPriceSetforZoneId(vmZoneId, vmZoneName, vmName, vmId)
 
