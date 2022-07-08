@@ -57,7 +57,7 @@ def matchPriceSetforZoneId(zoneId, zoneName, vmName, vmId):
         priceSetObject = json.dumps(data['priceSets'], indent=2)
         print(priceSetObject)
         for i in range(0, l):
-            if 'zone' in data['priceSets'][i]:
+            if data['priceSets'][i]['zone'] is None:
                 if zoneId == data['priceSets'][i]['zone']['id']:
                     print(f"Price set { data['priceSets'][i]['name'] } is mapped to cloud { zoneName } for vm { vmName }. Now we need to get the right plan for vm { vmName }.\n " )
                     priceSetId = data['priceSets'][i]['id']
