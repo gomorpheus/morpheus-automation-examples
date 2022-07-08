@@ -47,7 +47,7 @@ def getServicePlan(priceSetId, vmName, zoneName, vmId):
                 convertToManaged(planId, vmName, vmId, planName)
 
 def matchPriceSetforZoneId(zoneId, zoneName, vmName, vmId):
-    url = f'https://{ host }/api/price-sets?includeZones=true&phrase=NA'
+    url = f'https://{ host }/api/price-sets?includeZones=true&phrase=NA%20'
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
     l = len(data['priceSets'])
