@@ -58,12 +58,12 @@ def matchPriceSetforZoneId(zoneId, zoneName, vmName, vmId):
         print(priceSetObject)
         for i in range(0, l):
             if not data['priceSets'][i]['zone']['id']:
-                print(f"Plan name {data['priceSets'][i]['name'] does not have a cloud associated, not a dedicated price set.}")
+                print(f"Plan name {data['priceSets'][i]['name'] doesnot have a cloud associated, isnt a dedicated priceset.}")
             elif zoneId == data['priceSets'][i]['zone']['id']:
                 print(f"Price set { data['priceSets'][i]['name'] } is mapped to cloud { zoneName } for vm { vmName }. Now we need to get the right plan for vm { vmName }.\n " )
                 priceSetId = data['priceSets'][i]['id']
                 getServicePlan(priceSetId, vmName, zoneName, vmId)
-                
+
 
 # Get discovered VM of all clouds with VMwareVM (type : vCenter) as technology
 def getDiscoveredVM():    
