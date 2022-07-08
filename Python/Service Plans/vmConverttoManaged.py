@@ -54,8 +54,8 @@ def matchPriceSetforZoneId(zoneId, zoneName, vmName, vmId):
     if l is None:
         print("No priceset found with name starts with NA. \n")
     else:
-        priceSetObject = json.dumps(data['priceSets'], indent=2)
-        print(priceSetObject)
+        # priceSetObject = json.dumps(data['priceSets'], indent=2)
+        # print(priceSetObject)
         for i in range(0, l):
             if data['priceSets'][i]['zone'] is not None:
                 if zoneId == data['priceSets'][i]['zone']['id']:
