@@ -39,7 +39,7 @@ def getServicePlan(priceSetId, vmName, zoneName, vmId):
     data = r.json()
     l = len(data['servicePlans'])
     servicePlanObject = json.dumps(data['servicePlans'], indent=2)
-    print(priceSetObject)
+    print(servicePlanObject)
     for i in range(0, l):
         p = len(data['servicePlans'][i]['priceSets'])
         for x in range(0, p):
