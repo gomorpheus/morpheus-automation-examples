@@ -33,10 +33,13 @@ def convertToManaged(planId,vmName,vmId, planName):
 
 
 def getServicePlan(priceSetId, vmName, zoneName, vmId):
+    print("Get Service Plan function")
     url = f'https://{ host }/api/service-plans?includeZones=true&provisionTypeId=6'
     r = requests.get(url, headers = headers, verify = False)
     data = r.json()
     l = len(data['servicePlans'])
+    servicePlanObject = json.dumps(data['servicePlans'], indent=2)
+    print(priceSetObject)
     for i in range(0, l):
         p = len(data['servicePlans'][i]['priceSets'])
         for x in range(0, p):
@@ -54,8 +57,6 @@ def matchPriceSetforZoneId(zoneId, zoneName, vmName, vmId):
     if l is None:
         print("No priceset found with name starts with NA. \n")
     else:
-        # priceSetObject = json.dumps(data['priceSets'], indent=2)
-        # print(priceSetObject)
         for i in range(0, l):
             if data['priceSets'][i]['zone'] is not None:
                 if zoneId == data['priceSets'][i]['zone']['id']:
@@ -85,8 +86,8 @@ def getDiscoveredVM():
             print(f"VM Zoneid: {vmZoneId}")
             vmZoneName = data['servers'][i]['zone']['name']
             print(f"VM Zone Name: {vmZoneName}")
-            # vmobject = json.dumps(data['servers'][i], indent=2)
-            # print(vmobject)
+            vmobject = json.dumps(data['servers'][i], indent=2)
+            print(vmobject)
             # Search all price sets where the zoneId matches. This is to make sure that this discovered vm will be assigned a plan which is dedicated to its cloud.
             matchPriceSetforZoneId(vmZoneId, vmZoneName, vmName, vmId)
 
