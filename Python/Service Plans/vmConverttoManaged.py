@@ -34,7 +34,7 @@ def convertToManaged(planId,vmName,vmId, planName):
 
 def getServicePlan(priceSetId, vmName, zoneName, vmId):
     print("Get Service Plan function")
-    url = f'https://{ host }/api/service-plans?includeZones=true&provisionTypeId=6'
+    url = f'https://{ host }/api/service-plans?includeZones=true&provisionTypeId=17'
     r = requests.get(url, headers = headers, verify = False)
     data = r.json()
     l = len(data['servicePlans'])
