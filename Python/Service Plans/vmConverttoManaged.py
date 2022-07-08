@@ -54,7 +54,8 @@ def matchPriceSetforZoneId(zoneId, zoneName, vmName, vmId):
     if l is None:
         print("No priceset found with name starts with NA. \n")
     else:
-        print(f'Price Set found: {data['priceSets']}')
+        priceSetObject = json.dumps(data['priceSets'], indent=2)
+        print(priceSetObject)
         for i in range(0, l):
             if zoneId == data['priceSets'][i]['zone']['id']:
                 print(f"Price set { data['priceSets'][i]['name'] } is mapped to cloud { zoneName } for vm { vmName }. Now we need to get the right plan for vm { vmName }.\n " )
