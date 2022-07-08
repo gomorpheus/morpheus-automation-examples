@@ -47,15 +47,18 @@ def getServicePlan(priceSetId, vmName, zoneName, vmId):
                 convertToManaged(planId, vmName, vmId, planName)
 
 def matchPriceSetforZoneId(zoneId, zoneName, vmName, vmId):
-    url = f'https://{ host }/api/price-sets?includeZones=true&phrase=CS_vmware'
+    url = f'https://{ host }/api/price-sets?includeZones=true&phrase=NA'
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
     l = len(data['priceSets'])
-    for i in range(0, l):
-        if zoneId == data['priceSets'][i]['zone']['id']:
-            print(f"Price set { data['priceSets'][i]['name'] } is mapped to cloud { zoneName } for vm { vmName }. Now we need to get the right plan for vm { vmName }.\n " )
-            priceSetId = data['priceSets'][i]['id']
-            getServicePlan(priceSetId, vmName, zoneName, vmId)
+    if l is None:
+        print("No priceset found with name starts with NA. \n")
+    else:
+        for i in range(0, l):
+            if zoneId == data['priceSets'][i]['zone']['id']:
+                print(f"Price set { data['priceSets'][i]['name'] } is mapped to cloud { zoneName } for vm { vmName }. Now we need to get the right plan for vm { vmName }.\n " )
+                priceSetId = data['priceSets'][i]['id']
+                getServicePlan(priceSetId, vmName, zoneName, vmId)
 
 # Get discovered VM of all clouds with VMwareVM (type : vCenter) as technology
 def getDiscoveredVM():    
@@ -66,11 +69,16 @@ def getDiscoveredVM():
     if l is None:
         print("No discovered servers found. \n")
     else:
+        print(f"Number of discovered servers found: {l}")
         for i in range(0, l):
             vmId = data['servers'][i]['id']
+            print(f"VM ID: {vmId}")
             vmName = data['servers'][i]['name']
+            print(f"VM Name: {vmName}")
             vmZoneId = data['servers'][i]['zone']['id']
+            print(f"VM Zoneid: {vmZoneId}")
             vmZoneName = data['servers'][i]['zone']['name']
+            print(f"VM Zone Name: {vmZoneName}")
             # Search all price sets where the zoneId matches. This is to make sure that this discovered vm will be assigned a plan which is dedicated to its cloud.
             matchPriceSetforZoneId(vmZoneId, vmZoneName, vmName, vmId)
 
