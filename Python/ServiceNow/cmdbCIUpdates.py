@@ -22,25 +22,25 @@ MORPHEUS_VERIFY_SSL_CERT = False
 MORPHEUS_HOST = morpheus['morpheus']['applianceHost']
 MORPHEUS_TENANT_TOKEN = morpheus['morpheus']['apiAccessToken']
 MORPHEUS_HEADERS = {"Content-Type":"application/json","Accept":"application/json","Authorization": "Bearer " + MORPHEUS_TENANT_TOKEN} 
-MORPHEUS_IDM_NAME = "IDM"
-MORPHEUS_VCENTER_FQDN_MAP = {
-    "VMWare RTPC": "mgmtvcsa120.infra.sct.toscana.it",
-    "VMWare CCTT": "mgmtvcsa120.infra.sct.toscana.it",
-    "VMWare MGMT": "mgmtvcsa120.infra.sct.toscana.it",
-    "Default": "unknown"
-}
-MORPHEUS_VCENTER_API_VER_MAP = {
-    "VMWare RTPC": "7.0",
-    "VMWare CCTT": "7.0",
-    "VMWare MGMT": "7.0",
-    "Default": "7.0"
-}
+# MORPHEUS_IDM_NAME = "IDM"
+# MORPHEUS_VCENTER_FQDN_MAP = {
+#     "VMWare RTPC": "mgmtvcsa120.infra.sct.toscana.it",
+#     "VMWare CCTT": "mgmtvcsa120.infra.sct.toscana.it",
+#     "VMWare MGMT": "mgmtvcsa120.infra.sct.toscana.it",
+#     "Default": "unknown"
+# }
+# MORPHEUS_VCENTER_API_VER_MAP = {
+#     "VMWare RTPC": "7.0",
+#     "VMWare CCTT": "7.0",
+#     "VMWare MGMT": "7.0",
+#     "Default": "7.0"
+# }
 
 
 # SNow Globals
 SNOW_HEADERS = { "Content-Type": "application/json", "Accept": "application/json" }
 SNOW_HOSTNAME = "regionetoscanatest.service-now.com"
-SNOW_USER = 'morpheus'
+SNOW_USER = 'acme'
 # SNow password is either the 1st commandline arg like <%= cypher.read('secret/dxcsnowpass')%>
 # OR Cypher secret/dxcsnowpass
 if len(sys.argv) > 1:
@@ -101,24 +101,24 @@ def get_morpheus_cloud_detail(cloud_id, cloud_name):
     if 'config' not in morpheus_cloud_data['zone']:
         print("It looks like the API key doesn't have access to get cloud config. Looking up using map vars instead...")
         cloud_name = morpheus_cloud_data['zone']['name']
-        if cloud_name in MORPHEUS_VCENTER_FQDN_MAP:
-            vcenter_name = MORPHEUS_VCENTER_FQDN_MAP[cloud_name]
-        else:
-            vcenter_name = MORPHEUS_VCENTER_FQDN_MAP['Default']
-            print("Cloud '%s' not found in FQDN Map, using default '%s'." % (cloud_name, vcenter_name))
+        # if cloud_name in MORPHEUS_VCENTER_FQDN_MAP:
+        #     vcenter_name = MORPHEUS_VCENTER_FQDN_MAP[cloud_name]
+        # else:
+        #     vcenter_name = MORPHEUS_VCENTER_FQDN_MAP['Default']
+        #     print("Cloud '%s' not found in FQDN Map, using default '%s'." % (cloud_name, vcenter_name))
 
-        if cloud_name in MORPHEUS_VCENTER_API_VER_MAP:
-            api_ver = MORPHEUS_VCENTER_API_VER_MAP[cloud_name]
-        else:
-            api_ver = MORPHEUS_VCENTER_API_VER_MAP['Default']
-            print("Cloud '%s' not found in API Version Map, using default '%s'." % (cloud_name, api_ver))
+        # if cloud_name in MORPHEUS_VCENTER_API_VER_MAP:
+        #     api_ver = MORPHEUS_VCENTER_API_VER_MAP[cloud_name]
+        # else:
+        #     api_ver = MORPHEUS_VCENTER_API_VER_MAP['Default']
+        #     print("Cloud '%s' not found in API Version Map, using default '%s'." % (cloud_name, api_ver))
 
-        # Update config section from lookup
-        morpheus_cloud_data['zone']['config'] = {}
-        morpheus_cloud_data['zone']['config']['apiUrl'] = 'https://%s/sdk' % (vcenter_name)
-        morpheus_cloud_data['zone']['config']['apiVersion'] = api_ver
+        # # Update config section from lookup
+        # morpheus_cloud_data['zone']['config'] = {}
+        # morpheus_cloud_data['zone']['config']['apiUrl'] = 'https://%s/sdk' % (vcenter_name)
+        # morpheus_cloud_data['zone']['config']['apiVersion'] = api_ver
         
-    return morpheus_cloud_data
+    return cloud_name
 
 
 def get_snow_vm_sys_id():
@@ -293,22 +293,23 @@ def update_snow_instance_ci(morpheus_instance_data, morpheus_cloud_data):
     vm_sys_id = get_snow_vm_sys_id()
     body = {}
     body["nics"] = len(morpheus_instance_data['instance']['interfaces'])
-    body["image_path"] = get_morpheus_vm_image_path(morpheus_instance_data)
-    body["u_cmp_resource_group"] = get_snow_cmp_group_sys_id()
-    body["u_tenant"] = get_snow_tenant_id() 
-    if "vmware" in morpheus['instance']['provisionType']:
-        print("Populate VMware fields...")
-        url = 'https://%s/api/now/table/cmdb_ci_vmware_instance/%s' % (SNOW_HOSTNAME, vm_sys_id)
-        body["u_resource_pool"] = get_morpheus_resource_pool_name(morpheus_instance_data)
-        body["u_api_version"] = morpheus_cloud_data['zone']['config']['apiVersion']
-        body["vm_cluster_name"] = morpheus_instance_data['instance']['cloud']['name']
-        body["u_esx_host"] = get_snow_esxi_host_sys_id(morpheus_instance_data)
-        body["vm_instance_uuid"] = get_morpheus_external_vm_uuid(morpheus_instance_data)
-        body["vcenter_ref"] = get_snow_vcenter_sys_id(morpheus_cloud_data)
-    else:
-        print("Populate Non-VMware fields...")
-        url = 'https://%s/api/now/table/cmdb_ci_kvm_vm_instance/%s' % (SNOW_HOSTNAME, vm_sys_id)
-        body["vm_inst_id"] = get_morpheus_external_vm_uuid(morpheus_instance_data)
+    body["correlation_id"] = str(vm_sys_id)
+    #body["image_path"] = get_morpheus_vm_image_path(morpheus_instance_data)
+    #body["u_cmp_resource_group"] = get_snow_cmp_group_sys_id()
+    #body["u_tenant"] = get_snow_tenant_id() 
+    # if "vmware" in morpheus['instance']['provisionType']:
+    #     print("Populate VMware fields...")
+    #     url = 'https://%s/api/now/table/cmdb_ci_vmware_instance/%s' % (SNOW_HOSTNAME, vm_sys_id)
+    #     body["u_resource_pool"] = get_morpheus_resource_pool_name(morpheus_instance_data)
+    #     body["u_api_version"] = morpheus_cloud_data['zone']['config']['apiVersion']
+    #     body["vm_cluster_name"] = morpheus_instance_data['instance']['cloud']['name']
+    #     body["u_esx_host"] = get_snow_esxi_host_sys_id(morpheus_instance_data)
+    #     body["vm_instance_uuid"] = get_morpheus_external_vm_uuid(morpheus_instance_data)
+    #     body["vcenter_ref"] = get_snow_vcenter_sys_id(morpheus_cloud_data)
+    # else:
+    #     print("Populate Non-VMware fields...")
+    #     url = 'https://%s/api/now/table/cmdb_ci_kvm_vm_instance/%s' % (SNOW_HOSTNAME, vm_sys_id)
+    #     body["vm_inst_id"] = get_morpheus_external_vm_uuid(morpheus_instance_data)
 
     body_text = json.dumps(body)
     print("Updating ServiceNow @ " + url)
