@@ -40,7 +40,7 @@ MORPHEUS_HEADERS = {"Content-Type":"application/json","Accept":"application/json
 # SNow Globals
 SNOW_HEADERS = { "Content-Type": "application/json", "Accept": "application/json" }
 SNOW_HOSTNAME = "regionetoscanatest.service-now.com"
-SNOW_USER = 'acme'
+SNOW_USER = 'morpheus'
 # SNow password is either the 1st commandline arg like <%= cypher.read('secret/dxcsnowpass')%>
 # OR Cypher secret/dxcsnowpass
 if len(sys.argv) > 1:
@@ -294,22 +294,22 @@ def update_snow_instance_ci(morpheus_instance_data, morpheus_cloud_data):
     body = {}
     body["nics"] = len(morpheus_instance_data['instance']['interfaces'])
     body["correlation_id"] = str(vm_sys_id)
-    #body["image_path"] = get_morpheus_vm_image_path(morpheus_instance_data)
-    #body["u_cmp_resource_group"] = get_snow_cmp_group_sys_id()
-    #body["u_tenant"] = get_snow_tenant_id() 
-    # if "vmware" in morpheus['instance']['provisionType']:
-    #     print("Populate VMware fields...")
-    #     url = 'https://%s/api/now/table/cmdb_ci_vmware_instance/%s' % (SNOW_HOSTNAME, vm_sys_id)
-    #     body["u_resource_pool"] = get_morpheus_resource_pool_name(morpheus_instance_data)
-    #     body["u_api_version"] = morpheus_cloud_data['zone']['config']['apiVersion']
-    #     body["vm_cluster_name"] = morpheus_instance_data['instance']['cloud']['name']
-    #     body["u_esx_host"] = get_snow_esxi_host_sys_id(morpheus_instance_data)
-    #     body["vm_instance_uuid"] = get_morpheus_external_vm_uuid(morpheus_instance_data)
-    #     body["vcenter_ref"] = get_snow_vcenter_sys_id(morpheus_cloud_data)
-    # else:
-    #     print("Populate Non-VMware fields...")
-    #     url = 'https://%s/api/now/table/cmdb_ci_kvm_vm_instance/%s' % (SNOW_HOSTNAME, vm_sys_id)
-    #     body["vm_inst_id"] = get_morpheus_external_vm_uuid(morpheus_instance_data)
+    body["image_path"] = get_morpheus_vm_image_path(morpheus_instance_data)
+    body["u_cmp_resource_group"] = get_snow_cmp_group_sys_id()
+    # body["u_tenant"] = get_snow_tenant_id() 
+    if "vmware" in morpheus['instance']['provisionType']:
+        print("Populate VMware fields...")
+        url = 'https://%s/api/now/table/cmdb_ci_vmware_instance/%s' % (SNOW_HOSTNAME, vm_sys_id)
+        # body["u_resource_pool"] = get_morpheus_resource_pool_name(morpheus_instance_data)
+        # body["u_api_version"] = morpheus_cloud_data['zone']['config']['apiVersion']
+        # body["vm_cluster_name"] = morpheus_instance_data['instance']['cloud']['name']
+        # body["u_esx_host"] = get_snow_esxi_host_sys_id(morpheus_instance_data)
+        body["vm_instance_uuid"] = get_morpheus_external_vm_uuid(morpheus_instance_data)
+        # body["vcenter_ref"] = get_snow_vcenter_sys_id(morpheus_cloud_data)
+    else:
+        print("Populate Non-VMware fields...")
+        url = 'https://%s/api/now/table/cmdb_ci_kvm_vm_instance/%s' % (SNOW_HOSTNAME, vm_sys_id)
+        body["vm_inst_id"] = get_morpheus_external_vm_uuid(morpheus_instance_data)
 
     body_text = json.dumps(body)
     print("Updating ServiceNow @ " + url)
