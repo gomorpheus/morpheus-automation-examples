@@ -8,7 +8,7 @@ token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
 
 def approvalList():
-    url=f'https://{ host }/api/approvals'
+    url='https://%s/api/approvals' % (host)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
     #print(data)
@@ -31,7 +31,7 @@ def approvalList():
         #Do an api call for each item in the approval list to get more details of the approval item. Like Approved by and the Request for values.
         #print(i)
         approvalId = str(i['id'])
-        url=f'https://{ host }/api/approvals/ { approvalId }'
+        url='https://%s/api/approvals/%s' % (host,approvalId)
         r = requests.get(url, headers=headers, verify=False)
         data = r.json()
         a = data['approval']
