@@ -1,5 +1,5 @@
 import sys, json, requests, time
-from urllib.parse import urlparse
+# from urllib.parse import urlparse
 from morpheuscypher import Cypher
 
 
@@ -173,25 +173,25 @@ def get_snow_esxi_host_sys_id(instance_data):
     return data['result'][0]['sys_id']
 
 
-def get_snow_vcenter_sys_id(cloud_data):
-    print("Lookup ServcieNow sys_id for vCenter cloud...")
-    cloud_api_url = cloud_data['zone']['config']['apiUrl']
-    url_object = urlparse(cloud_api_url)
-    vcenter_name = url_object.hostname
+# def get_snow_vcenter_sys_id(cloud_data):
+#     print("Lookup ServcieNow sys_id for vCenter cloud...")
+#     cloud_api_url = cloud_data['zone']['config']['apiUrl']
+#     url_object = urlparse(cloud_api_url)
+#     vcenter_name = url_object.hostname
     
-    url = 'https://%s/api/now/cmdb/instance/cmdb_ci_vcenter' % (SNOW_HOSTNAME)
-    query_params = { "sysparm_query": "name=" + vcenter_name, "sysparm_limit": "1" }
-    response = requests.get(url, auth=(SNOW_USER, SNOW_PWD), headers=SNOW_HEADERS, params=query_params)
-    if not response.ok:
-        print("Error fetching vCenter sys_id from ServiceNow for vCenter '%s': Response code %s: %s" % (vcenter_name, response.status_code, response.text))
-        raise Exception("Error fetching vCenter sys_id from ServiceNow for vCenter '%s': Response code %s: %s" % (vcenter_name, response.status_code, response.text))
+#     url = 'https://%s/api/now/cmdb/instance/cmdb_ci_vcenter' % (SNOW_HOSTNAME)
+#     query_params = { "sysparm_query": "name=" + vcenter_name, "sysparm_limit": "1" }
+#     response = requests.get(url, auth=(SNOW_USER, SNOW_PWD), headers=SNOW_HEADERS, params=query_params)
+#     if not response.ok:
+#         print("Error fetching vCenter sys_id from ServiceNow for vCenter '%s': Response code %s: %s" % (vcenter_name, response.status_code, response.text))
+#         raise Exception("Error fetching vCenter sys_id from ServiceNow for vCenter '%s': Response code %s: %s" % (vcenter_name, response.status_code, response.text))
 
-    data = response.json()
-    if not data['result']:
-        print("vCenter '%s' not found in ServiceNow: Response code %s: %s" % (vcenter_name, response.status_code, response.text))
-        raise Exception("vCenter '%s' not found in ServiceNow: Response code %s: %s" % (vcenter_name, response.status_code, response.text))
+#     data = response.json()
+#     if not data['result']:
+#         print("vCenter '%s' not found in ServiceNow: Response code %s: %s" % (vcenter_name, response.status_code, response.text))
+#         raise Exception("vCenter '%s' not found in ServiceNow: Response code %s: %s" % (vcenter_name, response.status_code, response.text))
 
-    return data['result'][0]['sys_id']   
+#     return data['result'][0]['sys_id']   
 
 
 def get_morpheus_resource_pool_name(instance_data):
