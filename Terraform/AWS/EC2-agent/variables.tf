@@ -35,9 +35,3 @@ variable "sec_group_name" {
   description = "Will create the security group specified and assign to instance"
   default     = "morpheus-aio-sec-group"
 }
-
-variable "download" {
-  type        = string
-  description = "Enter the full download url of the Morpheus install. Currently requires Amazon Linux 2 version"
-  default     = "https://downloads.morpheusdata.com/files/morpheus-appliance-5.4.3-1.amzn2.x86_64.rpm"
-}
