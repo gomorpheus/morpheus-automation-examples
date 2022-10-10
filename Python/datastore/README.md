@@ -1,6 +1,6 @@
 # Activate - Deactivate datastore based on free space %
 
-** Pre-reqs **
+### Pre-reqs
 1. Update the cloudID in line 113
 2. Update basic auth token for vcenter creds in line 32
 
