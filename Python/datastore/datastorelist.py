@@ -29,7 +29,7 @@ def generateSession(vcentername):
     url = 'https://%s/api/session'%(vcentername)
     payload={}
     headers = {
-  'Authorization': 'Basic bWNoYW5kQGFkLm1vcnBoZXVzZGF0YS5jb206U2hhdXJ5YUAyMDE2',
+  'Authorization': 'Basic xxxxxxx',
      }
     response = requests.request("POST", url, headers=headers, data=payload,verify=False)
     #print(response.text)
@@ -40,7 +40,7 @@ def deleteSession(vcentername,VmwareApiSessionId):
     payload={}
     files={}
     headers = {
-  'Authorization': 'Basic bWNoYW5kQGFkLm1vcnBoZXVzZGF0YS5jb206U2hhdXJ5YUAyMDE2',
+  'Authorization': 'Basic xxxxxx',
   'Cookie': 'vmware-api-session-id='+ str(VmwareApiSessionId)
     }
     response = requests.request("POST", url, headers=headers, data=payload, files=files,verify=False)
@@ -110,4 +110,4 @@ def listDatastores():
 #call functions
 
 listDatastores()
-#getDatastores(2)
+getDatastores(2)
