@@ -28,3 +28,8 @@ println tenantIds
 // Initialize global application Context for permissionService
 permissionService = grails.util.Holders.applicationContext['permissionService']
 permissionService.updateTenantPermissions('NetworkDomain',networkDomainName.id, tenantIds.collect { it.toLong()} )
+
+// Update group permissions for the network domain
+def resourcePermissions = [all: false, sites: [[id: 70, default: true]] ]
+permissionService.updateResourcePermissions(masterTenant, 'NetworkDomain', networkDomainName.id, resourcePermissions)
+results.success
