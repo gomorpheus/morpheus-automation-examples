@@ -1,3 +1,16 @@
+### Morpheus Environment Variables ###
+$morpheusURL = '<%=morpheus.applianceUrl%>'
+$bearerToken = '<%=morpheus.apiAccessToken%>'
+
+### Script Variables ###
+$headers=@{}
+$headers.Add("content-type", "application/json")
+$headers.Add("authorization", "Bearer $bearerToken")
+
+### Begin Script ###
+Write-Host 'Begin Script...' -ForegroundColor Green
+
+### Functions ###
 function add-OptionList ($name,$fieldName,$description,$json,$required) {
     $json = $json | ConvertTo-Json -Compress
     $name = $name

@@ -1,3 +1,16 @@
+### Morpheus Environment Variables ###
+$morpheusURL = '<%=morpheus.applianceUrl%>'
+$bearerToken = '<%=morpheus.apiAccessToken%>'
+
+### Script Variables ###
+$headers=@{}
+$headers.Add("content-type", "application/json")
+$headers.Add("authorization", "Bearer $bearerToken")
+
+### Begin Script ###
+Write-Host 'Begin Script...' -ForegroundColor Green
+
+### Functions ###
 function add-Input ($name,$fieldName,$description,$type,$id,$required) {
     if($id) {
         $body = @"
