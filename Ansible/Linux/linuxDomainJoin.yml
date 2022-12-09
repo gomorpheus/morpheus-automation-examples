@@ -1,0 +1,122 @@
+---
+  - name: Base Linux Installs
+    hosts: all
+    gather_facts: true
+    become: true
+    
+    vars:
+      domainName: "{{ morpheus['instance']['domainName'] }}"
+      domainCreds: |
+        {{ lookup('cypher','secret=secret/' + domainName) }}
+
+    tasks:
+      - name: Add Universe Repo
+        apt_repository:
+          repo: "{{ item }}"
+          state: present
+          update_cache: no
+        loop:
+          - "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} universe"
+          - "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-updates universe"
+        when: ansible_os_family == 'Debian'
+
+      - name: Refresh Repo
+        apt:
+          update_cache: yes
+        when: ansible_os_family == 'Debian'
+      
+      - name: Update and Upgrade Packages
+        yum:
+          name: '*'
+          state: latest
+        when: ansible_os_family == 'RedHat'
+
+      - name: Install Ubuntu Packages
+        package:
+          name:
+            - wget
+            - vim
+            - net-tools
+            - jq
+            - realmd
+            - libnss-sss
+            - libpam-sss
+            - sssd
+            - sssd-tools
+            - adcli
+            - samba-common-bin
+            - oddjob
+            - oddjob-mkhomedir
+            - packagekit
+          state: present
+        when: ansible_os_family == 'Debian'
+
+      - name: Install Cent/RHEL Packages
+        package:
+          name:
+            - wget
+            - telnet
+            - sssd
+            - realmd
+            - jq
+            - oddjob
+            - oddjob-mkhomedir
+            - adcli
+            - samba-common
+            - samba-common-tools
+            - krb5-workstation
+            - openldap-clients
+            - policycoreutils-python
+          state: present
+        when: ansible_os_family == 'RedHat'
+
+      - name: Reset Machine ID
+        command: |
+          rm -rf /etc/machine-id
+
+          systemd-machine-id-setup
+        when: ansible_os_family == 'RedHat'
+
+      - name: Join Domain
+        shell:
+          cmd: |
+            echo '{{ domainCreds.password }}' | realm join --user={{ domainCreds.username }} {{ domainName }}
+        no_log: true
+
+      - name: Add Search String
+        shell:
+          cmd: |
+            sed -i '1s/^/search "{{ domainName }}" \n/' /etc/resolv.conf
+
+      - name: Create User Home Directories
+        shell:
+          cmd: |
+            sudo bash -c "cat > /usr/share/pam-configs/mkhomedir" <<EOF
+            Name: activate mkhomedir
+            Default: yes
+            Priority: 900
+            Session-Type: Additional
+            Session:
+                    required                        pam_mkhomedir.so umask=0022 skel=/etc/skel
+            EOF
+
+            pam-auth-update --enable mkhomedir
+        when: ansible_os_family == 'Debian'
+      
+      - name: Restart Services
+        service:
+          name: "{{ item }}"
+          state: restarted
+        loop:
+          - sssd
+
+      - name: Add Admin AD Group to Sudoers
+        shell:
+          cmd: |
+            echo '%{{ domainCreds.admin }} ALL=(ALL) ALL' >> /etc/sudoers
+        when: (domainCreds.admin is defined) or (domainCreds.admin|length > 0)
+
+      - name: Add Domain Admins to Sudoers
+        shell:
+          cmd: |
+            echo '%domain\ admins.{{ domainName }} ALL=(ALL) ALL' >> /etc/sudoers
