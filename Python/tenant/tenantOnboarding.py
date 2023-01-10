@@ -16,8 +16,8 @@ morphheaders = {"Content-Type":"application/json","Accept":"application/json","A
 from morpheuscypher import Cypher
 c = Cypher(morpheus=morpheus,ssl_verify=False)
 
-cypass=str(c.get("secret/dxcsnowpass"))
-serviceNowInstanceName="regionetoscanatest.service-now.com"
+cypass=str(c.get("secret/xxxx"))
+serviceNowInstanceName="xxxx.service-now.com"
 
 user = 'morpheus'
 pwd = cypass
@@ -38,7 +38,7 @@ def createSubtenantAdminUser(tenantID):
     print("Creating subtenant user")
     url="https://%s/api/accounts/%s/users" % (host, tenantID)
     print("Url : "+ url)
-    b={"user":{"username": "testuser","email": "testuser@morpheusdata.com","firstName": "Test","lastName": "User","password": "aStr0ngp@ssword","roles": [{"id": 74}]}}
+    b={"user":{"username": "testuser","email": "testuser@morpheusdata.com","firstName": "Test","lastName": "User","password": "xxxxxxx","roles": [{"id": 74}]}}
     body=json.dumps(b)
     response = requests.post(url, headers=morphheaders, data=body, verify=False)
     data = response.json()
