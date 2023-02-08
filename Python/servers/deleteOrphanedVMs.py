@@ -7,16 +7,33 @@ host=morpheus['morpheus']['applianceHost']
 token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
 
+def deleteVMFromMorpheus(serverName,serverId,status,powerState):
+    #This function will just delete the server record from morpheus and not from end cloud of type vmware
+    url = ("https://%s/api/servers/%s?removeResources=off&preserveVolumes=off") % (host,serverId)
+    r = requests.delete(url, headers=headers, verify=False)
+    data = r.json()
+    deletestatus = data['success']
+    return deletestatus
+
 def getListofDiscoveredVM():
-    url = ("https://%s/api/servers?serverType=VMware+VM&powerState=off&managed=false&max=1") % (host)
+    url = ("https://%s/api/servers?serverType=VMware+VM&powerState=off&managed=false&max=2") % (host)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
-    serverName = data['servers'][0]['name']
-    serverId = data['servers'][0]['id']
-    status = data['servers'][0]['status']
-    powerState = data['servers'][0]['status']
+    l = len(data['servers'])
+    if l is None:
+        print("No discovered vmware v's found in the powered off state. \n")
+    else:
+        for i in range(0, l):
+            serverName = data['servers'][i]['name']
+            serverId = data['servers'][i]['id']
+            status = data['servers'][i]['status']
+            powerState = data['servers'][i]['status']
+            # Print the serverr info
+            print("VM : %s with server id %s is in the state %s and the power status is %s\n") % (serverName,serverId,status,powerState)
+            deleteStatus = deleteVMFromMorpheus(serverName,serverId,status,powerState)
+            print("Delete status of VM %s: %s\n\n") % (serverName,deleteStatus)
 
-    print("VM : %s with server id %s is in the state %s and the power status is %s") % (serverName,serverId,status,powerState)
+
 
 #Main
 getListofDiscoveredVM()
