@@ -20,6 +20,7 @@ def getListofDiscoveredVM():
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
     l = len(data['servers'])
+    print("Number of servers returned: %s\n") % (l)
     if l is None:
         print("No discovered vmware v's found in the powered off state. \n")
     else:
