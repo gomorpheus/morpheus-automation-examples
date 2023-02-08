@@ -12,8 +12,8 @@ def deleteVMFromMorpheus(serverName,serverId,status,powerState):
     url = ("https://%s/api/servers/%s?removeResources=off&preserveVolumes=off") % (host,serverId)
     r = requests.delete(url, headers=headers, verify=False)
     data = r.json()
-    deletestatus = data['success']
-    return deletestatus
+    deleteStatus = data['success']
+    print("Delete status of VM %s: %s\n\n") % (serverName,deleteStatus)
 
 def getListofDiscoveredVM():
     url = ("https://%s/api/servers?serverType=VMware+VM&powerState=off&managed=false&max=2") % (host)
@@ -30,8 +30,8 @@ def getListofDiscoveredVM():
             powerState = data['servers'][i]['status']
             # Print the serverr info
             print("VM : %s with server id %s is in the state %s and the power status is %s\n") % (serverName,serverId,status,powerState)
-            deleteStatus = deleteVMFromMorpheus(serverName,serverId,status,powerState)
-            print("Delete status of VM %s: %s\n\n") % (serverName,deleteStatus)
+            deleteVMFromMorpheus(serverName,serverId,status,powerState)
+            
 
 
 
