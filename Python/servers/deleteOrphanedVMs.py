@@ -8,7 +8,7 @@ token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
 
 def getListofDiscoveredVM():
-    url = ("https://%s/api/servers?serverType=VMware+VM&powerState=off&max=1&offset=0") % (host)
+    url = ("https://%s/api/servers?serverType=VMware+VM&powerState=off&managed=false&max=1") % (host)
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
     serverName = data['servers'][0]['name']
