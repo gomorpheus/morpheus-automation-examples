@@ -7,13 +7,13 @@ host=morpheus['morpheus']['applianceHost']
 token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
 
-def deleteVMFromMorpheus(serverName,serverId,status,powerState):
-    #This function will just delete the server record from morpheus and not from end cloud of type vmware
-    url = ("https://%s/api/servers/%s?removeResources=off&preserveVolumes=off") % (host,serverId)
-    r = requests.delete(url, headers=headers, verify=False)
-    data = r.json()
-    deleteStatus = data['success']
-    print("Delete status of VM %s: %s\n\n") % (serverName,deleteStatus)
+# def deleteVMFromMorpheus(serverName,serverId,status,powerState):
+#     #This function will just delete the server record from morpheus and not from end cloud of type vmware
+#     url = ("https://%s/api/servers/%s?removeResources=off&preserveVolumes=off") % (host,serverId)
+#     r = requests.delete(url, headers=headers, verify=False)
+#     data = r.json()
+#     deleteStatus = data['success']
+#     print("Delete status of VM %s: %s\n\n") % (serverName,deleteStatus)
 
 def getListofDiscoveredVM():
     url = ("https://%s/api/servers?serverType=VMware+VM&powerState=off&managed=false&max=2") % (host)
@@ -31,7 +31,12 @@ def getListofDiscoveredVM():
             powerState = data['servers'][i]['status']
             # Print the serverr info
             print("VM : %s with server id %s is in the state %s and the power status is %s\n") % (serverName,serverId,status,powerState)
-            deleteVMFromMorpheus(serverName,serverId,status,powerState)
+            #deleteVMFromMorpheus(serverName,serverId,status,powerState)
+            url = ("https://%s/api/servers/%s?removeResources=off&preserveVolumes=off") % (host,serverId)
+            r = requests.delete(url, headers=headers, verify=False)
+            ddata = r.json()
+            deleteStatus = ddata['success']
+            print("Delete status of VM %s: %s\n\n") % (serverName,deleteStatus)
             
 
 
