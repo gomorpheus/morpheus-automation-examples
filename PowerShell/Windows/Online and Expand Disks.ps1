@@ -17,6 +17,9 @@
 # Silence Output
 $ProgressPreference = 'SilentlyContinue'
 
+# Remove Recovery Partition (Optional)
+Get-Partition | Where-Object -FilterScript {$_.Type -eq 'Recovery'} | Remove-Partition
+
 #Variables
 $disks = get-disk
 $size = Get-PartitionSupportedSize -DriveLetter C
