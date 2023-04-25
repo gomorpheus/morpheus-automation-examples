@@ -14,6 +14,9 @@
         2. Set Task as Pre-provision and Reconfigure Phase of Provisioning WorkFlow    
 #>
 
+# Silence Output
+$ProgressPreference = 'SilentlyContinue'
+
 #Variables
 $disks = get-disk
 $size = Get-PartitionSupportedSize -DriveLetter C
