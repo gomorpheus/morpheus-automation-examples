@@ -49,8 +49,8 @@ $azurePlans = (Invoke-WebRequest -Method Get -Uri ($morphUrl + $plansApi + '?inc
         }
 
         # Activate Amazon Plans
-        foreach ($enablePlan in $enabledAmazonPlans) {
-            $plan = $amazonPlans | where code -eq $enablePlan
+        foreach ($enabledAmazonPlan in $enabledAmazonPlans) {
+            $plan = $amazonPlans | where code -eq $enabledAmazonPlan
             # Activate Plan
             Write-Host "Activating Service Plan $($plan.name)..."
             Invoke-WebRequest -Method Put -Uri ($morphUrl + $plansApi + $plan.id + '/activate') -Headers $morphHeader
@@ -69,8 +69,8 @@ $azurePlans = (Invoke-WebRequest -Method Get -Uri ($morphUrl + $plansApi + '?inc
         }
 
         # Activate Azure Plans
-        foreach ($enablePlan in $enabledAzurePlans) {
-            $plan = $azurePlans | where code -eq $enablePlan
+        foreach ($enabledAzurePlan in $enabledAzurePlans) {
+            $plan = $azurePlans | where code -eq $enabledAzurePlan
             # Activate Plan
             Write-Host "Activating Service Plan $($plan.name)..."
             Invoke-WebRequest -Method Put -Uri ($morphUrl + $plansApi + $plan.id + '/activate') -Headers $morphHeader
