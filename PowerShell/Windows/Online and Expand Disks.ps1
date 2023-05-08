@@ -18,7 +18,7 @@
 $ProgressPreference = 'SilentlyContinue'
 
 # Remove Recovery Partition (Optional)
-Get-Partition | Where-Object -FilterScript {$_.Type -eq 'Recovery'} | Remove-Partition
+Get-Partition | Where-Object -FilterScript {$_.Type -eq 'Recovery'} | Remove-Partition -confirm:$false
 
 #Variables
 $disks = get-disk
