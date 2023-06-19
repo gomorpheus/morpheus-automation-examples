@@ -34,7 +34,7 @@ def removeServer(id,name):
 # Get all discovered VM
 def getalldiscoveredvms():
     print("Get a list of discovered VM's\n")
-    url=f"https://{host}/api/servers?managed=false&vm=true&max=1" 
+    url=f"https://{host}/api/servers?managed=false&max=1" 
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
     l = len(data['servers'])
@@ -50,6 +50,9 @@ def getalldiscoveredvms():
                 for a in range(0, totalTags):
                     if tags[a]['name'] == searchTag:
                         print(f"Converting server {data['servers'][i]['name']} to managed")
+                    else:
+                        print(f"Removing vm: {data['servers'][i]['name']}: {totalTags} from morpheus management.")
+                        removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
             else:
                 print(f"Removing vm: {data['servers'][i]['name']}: {totalTags} from morpheus management.")
                 removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
