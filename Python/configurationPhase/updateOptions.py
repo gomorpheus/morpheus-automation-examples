@@ -1,4 +1,4 @@
-import json
+#import json
 # Declare the lifecycle and OU Name option list as a variable with contents
 updatedLifecycle={"P":"PROD", "U":"UAT"}
 updatedOU={"P":"Prod", "U":"NON-Prod"}
