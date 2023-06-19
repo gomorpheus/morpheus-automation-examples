@@ -53,7 +53,7 @@ def getalldiscoveredvms():
                     else:
                         print(f"Removing vm: {data['servers'][i]['name']}: {totalTags} from morpheus management.")
                         removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
-            else:
+            elif totalTags is None:
                 print(f"Removing vm: {data['servers'][i]['name']}: {totalTags} from morpheus management.")
                 removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
 
