@@ -7,6 +7,14 @@ token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
 searchTag="CreatedBy"
 
+def getLicenseCount():
+    url=f"https://{host}/api/license"
+    r=requests.get(url, headers=headers, verify=False)
+    data = r.json()
+    currentUsage = data['currentUsage']['workloads']
+    wleLimit=data['license']['maxInstances']
+    print(f"Current usage is: {currentUsage} out if {wleLimit}")
+
 def verify(id,name):
     url=f"https://{host}/api/servers?name={name}&max=1"
     r=requests.get(url, headers=headers, verify=False)
@@ -33,6 +41,7 @@ def removeServer(id,name):
 
 # Get all discovered VM
 def getalldiscoveredvms():
+    getLicenseCount()
     print("Get a list of discovered VM's\n")
     url=f"https://{host}/api/servers?managed=false&max=1" 
     r = requests.get(url, headers=headers, verify=False)
@@ -63,3 +72,4 @@ def getalldiscoveredvms():
                 removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
 ## Main
 getalldiscoveredvms()
+getLicenseCount()
