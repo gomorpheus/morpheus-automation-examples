@@ -46,16 +46,20 @@ def getalldiscoveredvms():
             totalTags = len(data['servers'][i]['tags'])
             tags = data['servers'][i]['tags']
             print(f"Total Tags found on VM {data['servers'][i]['name']}: {totalTags}")
-            if totalTags > 0:
-                for a in range(0, totalTags):
-                    if tags[a]['name'] == searchTag:
-                        print(f"Converting server {data['servers'][i]['name']} to managed")
-                    else:
-                        print(f"Removing vm: {data['servers'][i]['name']}: {totalTags} from morpheus management.")
-                        removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
-            elif totalTags is None:
-                print(f"Removing vm: {data['servers'][i]['name']}: {totalTags} from morpheus management.")
+            found = False
+            if totalTags is not None:
+                for tag in tags:
+                    if tag.get("name") == searchTag:
+                        found = True
+                        break
+                
+                if found:
+                    print(f"Converting server {data['servers'][i]['name']} to managed")
+                else:
+                    print(f"Removing vm: {data['servers'][i]['name']}: {totalTags} from morpheus management.")
+                    removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
+            else:
+                print(f"No Tags found on the server: {data['servers'][i]['name']}. Removing server from morpheus management")
                 removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
-
 ## Main
 getalldiscoveredvms()
