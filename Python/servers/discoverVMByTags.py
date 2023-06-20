@@ -74,11 +74,11 @@ def getalldiscoveredvms():
                         found = True
                         print(f"tagname:{tag.get('name')} - tagvalue:{tag.get('value')} - found:{found}")
                         break
-                    if found:
-                        print(f"Converting server {serverList[i]['name']} to managed")
-                    else:
-                        print(f"Removing vm: {serverList[i]['name']}: {totalTags} from morpheus management.")
-                        #removeServer(serverList[i]['id'],serverList[i]['name'] )
+                if found:
+                    print(f"Converting server {serverList[i]['name']} to managed")
+                else:
+                    print(f"Removing vm: {serverList[i]['name']}: {totalTags} from morpheus management.")
+                    #removeServer(serverList[i]['id'],serverList[i]['name'] )
             else:
                 print(f"No Tags found on the server: {serverList[i]['name']}. Removing server from morpheus management")
 
