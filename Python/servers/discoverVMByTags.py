@@ -5,7 +5,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 host=morpheus['morpheus']['applianceHost']
 token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
-searchTag="CreatedBy"
+searchTag="AutomatedBy"
+searchTagValue="Morpheus"
 
 def getLicenseCount():
     url=f"https://{host}/api/license"
@@ -54,9 +55,9 @@ def getalldiscoveredvms():
             serverList.append(a)
             servernames.append(a['name'])
 
-    # print(f"Server List:")
-    # for s in servernames:
-    #     print(s)
+    print(f"Server List:")
+    for s in servernames:
+        print(s)
     l = len(serverList)
     if l is None:
         print("No discovered servers found")
@@ -66,16 +67,20 @@ def getalldiscoveredvms():
             totalTags = len(serverList[i]['tags'])
             tags = serverList[i]['tags']
             print(f"Total Tags found on VM {serverList[i]['name']}: {totalTags}")
-            if totalTags > 0:
-                for a in range(0, totalTags):
-                    if tags[a]['name'] == searchTag:
+            found = False
+            if totalTags != 0:
+                for tag in serverList[i]['tags']:
+                    if tag.get("name") == searchTag and tag.get("value") == searchTagValue:
+                        found = True
+                        print(f"tagname:{tag.get('name')} - tagvalue:{tag.get('value')} - found:{found}")
+                        break
+                    if found:
                         print(f"Converting server {serverList[i]['name']} to managed")
                     else:
                         print(f"Removing vm: {serverList[i]['name']}: {totalTags} from morpheus management.")
-                        #removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
+                        #removeServer(serverList[i]['id'],serverList[i]['name'] )
             else:
-                print(f"Removing vm: {serverList[i]['name']}: {totalTags} from morpheus management.")
-                #removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
+                print(f"No Tags found on the server: {serverList[i]['name']}. Removing server from morpheus management")
 
 ## Main
 getalldiscoveredvms()
