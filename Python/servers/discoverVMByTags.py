@@ -28,7 +28,7 @@ def getLicenseCount():
     data = r.json()
     currentUsage = data['currentUsage']['workloads']
     wleLimit=data['license']['maxInstances']
-    print(f"Current usage is: {currentUsage} out if {wleLimit}")
+    print(f"Current usage is: {currentUsage} out of {wleLimit}")
 
 def verify(id,name):
     url=f"https://{host}/api/servers?name={name}&max=1"
@@ -58,7 +58,7 @@ def removeServer(id,name):
 def getalldiscoveredvms():
     getLicenseCount()
     print("Get a list of discovered VM's\n")
-    url=f"https://{host}/api/servers?managed=false&vm=true&max=100" 
+    url=f"https://{host}/api/servers?managed=false&max=100" 
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
     serverList = []
