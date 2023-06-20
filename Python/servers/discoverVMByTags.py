@@ -41,10 +41,8 @@ def verify(id,name):
             print(f"VM: {name} not deleted from Morpheus")
         else:
             print(f"VM: {name} deleted successfully")
-            convertToManaged(id,name)
     else:
         print(f"VM: {name} deleted successfully")
-        convertToManaged(id,name)
 
 def removeServer(id,name):
     url=f"https://{host}/api/servers/{id}?removeResources=off"
@@ -92,6 +90,7 @@ def getalldiscoveredvms():
                         break
                 if found:
                     print(f"Converting server {serverList[i]['name']} to managed")
+                    convertToManaged(serverList[i]['id'],serverList[i]['name'])
                 else:
                     print(f"Removing vm: {serverList[i]['name']}: {totalTags} from morpheus management.")
                     #removeServer(serverList[i]['id'],serverList[i]['name'] )
