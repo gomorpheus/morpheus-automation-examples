@@ -37,39 +37,46 @@ def removeServer(id,name):
     result = verify(id,name) if data['success'] else f"Remove Server func: {data}"
     print(result)
     
-        
-
 # Get all discovered VM
 def getalldiscoveredvms():
     getLicenseCount()
     print("Get a list of discovered VM's\n")
-    url=f"https://{host}/api/servers?managed=false&max=1" 
+    url=f"https://{host}/api/servers?managed=false&vm=true&max=100" 
     r = requests.get(url, headers=headers, verify=False)
     data = r.json()
-    l = len(data['servers'])
+    serverList = []
+    servernames = []
+    for a in data['servers']:
+        osType = a['osType']
+        #print(f"server {a['name']} has osType of {osType}.")
+        if 'esxi' not in a['osType']:
+            #print(a['name'])
+            serverList.append(a)
+            servernames.append(a['name'])
+
+    # print(f"Server List:")
+    # for s in servernames:
+    #     print(s)
+    l = len(serverList)
     if l is None:
         print("No discovered servers found")
     else:
         print("Total number of discovered servers "+ str(l) + ".\n")
         for i in range(0, l):
-            totalTags = len(data['servers'][i]['tags'])
-            tags = data['servers'][i]['tags']
-            print(f"Total Tags found on VM {data['servers'][i]['name']}: {totalTags}")
-            found = False
-            if totalTags is not None:
-                for tag in tags:
-                    if tag.get("name") == searchTag:
-                        found = True
-                        break
-                
-                if found:
-                    print(f"Converting server {data['servers'][i]['name']} to managed")
-                else:
-                    print(f"Removing vm: {data['servers'][i]['name']}: {totalTags} from morpheus management.")
-                    removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
+            totalTags = len(serverList[i]['tags'])
+            tags = serverList[i]['tags']
+            print(f"Total Tags found on VM {serverList[i]['name']}: {totalTags}")
+            if totalTags > 0:
+                for a in range(0, totalTags):
+                    if tags[a]['name'] == searchTag:
+                        print(f"Converting server {serverList[i]['name']} to managed")
+                    else:
+                        print(f"Removing vm: {serverList[i]['name']}: {totalTags} from morpheus management.")
+                        #removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
             else:
-                print(f"No Tags found on the server: {data['servers'][i]['name']}. Removing server from morpheus management")
-                removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
+                print(f"Removing vm: {serverList[i]['name']}: {totalTags} from morpheus management.")
+                #removeServer(data['servers'][i]['id'],data['servers'][i]['name'] )
+
 ## Main
 getalldiscoveredvms()
 getLicenseCount()
