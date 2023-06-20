@@ -1,4 +1,4 @@
-import requests, urllib3, time
+import requests, urllib3, time, json
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # define vars for API
@@ -7,6 +7,20 @@ token=morpheus['morpheus']['apiAccessToken']
 headers = {"Content-Type":"application/json","Accept":"application/json","Authorization": "BEARER " + (token)}
 searchTag="AutomatedBy"
 searchTagValue="Morpheus"
+
+def convertToManaged(id,name):
+    print (f'VM Name: {name}, VM ID: {id} will be converted to managed.\n')
+    url = f'https://{ host }/api/servers/{ id }/make-managed'
+    jbody={"server": {"instllAgent": False}}
+    body=json.dumps(jbody)
+    r = requests.put(url, headers=headers, verify=False, data=body)
+    data = r.json()
+    if not r.ok:
+        print("Error converting to managed: Response code %s: %s" % (r.status_code, r.text))
+        raise Exception("Error converting to managed: Response code %s: %s" % (r.status_code, r.text))
+    else:
+        print(f"Convert to manage is succesful for vm { name }.\n Checking the plan assigned..")
+        time.sleep(5)
 
 def getLicenseCount():
     url=f"https://{host}/api/license"
@@ -27,8 +41,10 @@ def verify(id,name):
             print(f"VM: {name} not deleted from Morpheus")
         else:
             print(f"VM: {name} deleted successfully")
+            convertToManaged(id,name)
     else:
         print(f"VM: {name} deleted successfully")
+        convertToManaged(id,name)
 
 def removeServer(id,name):
     url=f"https://{host}/api/servers/{id}?removeResources=off"
