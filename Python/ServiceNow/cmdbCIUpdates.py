@@ -39,7 +39,7 @@ MORPHEUS_HEADERS = {"Content-Type":"application/json","Accept":"application/json
 
 # SNow Globals
 SNOW_HEADERS = { "Content-Type": "application/json", "Accept": "application/json" }
-SNOW_HOSTNAME = "https://dev76934.service-now.com"
+SNOW_HOSTNAME = "dev76934.service-now.com"
 SNOW_USER = 'admin'
 # SNow password is either the 1st commandline arg like <%= cypher.read('secret/dxcsnowpass')%>
 # OR Cypher secret/dxcsnowpass
