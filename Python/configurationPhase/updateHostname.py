@@ -9,7 +9,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 configspec = morpheus['spec']
  
 osname = configspec['hostName']
-newname = osname[4:]
+newname = osname[4]:
 configspec['hostName'] = newname
 configspec['computedHostName'] = newname
 configspec['instance']['hostName'] = newname

@@ -14,15 +14,16 @@
         apt_repository:
           repo: "{{ item }}"
           state: present
-          update_cache: no
+          update_cache: yes
         loop:
           - "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} universe"
           - "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-updates universe"
         when: ansible_os_family == 'Debian'
 
-      - name: Refresh Repo
+      - name: Update and Upgrade Packages
         apt:
-          update_cache: yes
+          name: "*"
+          state: latest
         when: ansible_os_family == 'Debian'
       
       - name: Update and Upgrade Packages
@@ -120,3 +121,13 @@
         shell:
           cmd: |
             echo '%domain\ admins.{{ domainName }} ALL=(ALL) ALL' >> /etc/sudoers
+
+      - name: Add AD GPO Access Control
+        lineinfile:
+          path: /etc/sssd/sssd.conf
+          line: ad_gpo_access_control = permissive
+
+      - name: Restart SSSD
+        service:
+          name: sssd
+          state: restarted
