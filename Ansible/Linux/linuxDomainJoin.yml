@@ -87,7 +87,7 @@
       - name: Add Search String
         shell:
           cmd: |
-            sed -i '1s/^/search "{{ domainName }}" \n/' /etc/resolv.conf
+            sed -i "/^search /s/$/ {{ domainName }}/" /etc/resolv.conf
 
       - name: Create User Home Directories
         shell:
