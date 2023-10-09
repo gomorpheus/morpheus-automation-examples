@@ -49,7 +49,7 @@ foreach ($disk in $disks) {
         $partition = $disk | Get-Partition | where DriveLetter -ne "`0"
 
         if (($partition | measure).count -eq 1) {
-            $maxSize = (Get-PartitionSupportedSize -DriveLetter $partition.DriveLetter).sizeMax
+            $maxSize = ($partition | Get-PartitionSupportedSize).sizeMax
             Resize-Partition -DriveLetter $partition.DriveLetter -Size $maxSize -ErrorAction SilentlyContinue
             }
         
