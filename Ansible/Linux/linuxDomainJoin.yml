@@ -5,7 +5,7 @@
     become: true
     
     vars:
-      domainName: "{{ morpheus['instance']['domainName'] }}"
+      domainName: "{{ morpheus['server']['domainName'] }}"
       domainCreds: |
         {{ lookup('cypher','secret=secret/' + domainName) }}
 
