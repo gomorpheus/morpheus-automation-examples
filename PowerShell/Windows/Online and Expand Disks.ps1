@@ -62,6 +62,8 @@ foreach ($disk in $disks) {
                 if ($maxSize -ne $partition.Size) {
                     Write-Host "Resizing Disk `"${label}`" to ${ms}GB..." -ForegroundColor White
                     Resize-Partition -DriveLetter $partition.DriveLetter -Size $maxSize -ErrorAction SilentlyContinue
+                } else {
+                    Write-Host "No Resize Required!" -ForegroundColor Green
                 }
             }
         }
