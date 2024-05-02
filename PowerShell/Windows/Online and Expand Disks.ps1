@@ -27,7 +27,6 @@ Write-Host "Complete!" -ForegroundColor Green
 
 # Variables
 $disks = Get-Disk
-$size = Get-PartitionSupportedSize -DriveLetter C
 $diskorder = '<%= server.volumes.displayOrder.encodeAsJson().toString() %>' | ConvertFrom-Json
 $diskname = '<%= server.volumes.name.encodeAsJson().toString() %>' | ConvertFrom-Json
 $diskarray = $diskorder | Select-Object @{n='ID'; e={$diskorder[$_]}}, @{n='Name'; e={$diskname[$_]}}
