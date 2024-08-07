@@ -39,7 +39,7 @@ foreach ($disk in $disks) {
 
     # Online, Initialize, Format, and Assign Drive Letter to additional drives
     try {    
-        if ($disk.IsOffline -eq $true) {
+        if (($disk.IsOffline -eq $true) -or ($disk | Where-Object PartitionStyle -eq 'RAW')) {
             if ($layout -eq 'sql') {
                 Write-Host "Initializing SQL Disk `"${label}`"..." -ForegroundColor White
                 Initialize-Disk -Number $disk.DiskNumber -PassThru|
