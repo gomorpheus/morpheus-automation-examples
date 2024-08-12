@@ -84,7 +84,7 @@ foreach ($disk in $disks) {
             if (($partition | measure).count -eq 1) {
                 $maxSize = ($partition | Get-PartitionSupportedSize).sizeMax
                 $ms = [math]::round($maxSize/1GB, 2)
-                if (($maxSize - $partition.Size) >= 1000000) {
+                if (($maxSize - $partition.Size) -ge 1000000) {
                     Write-Host "Resizing Disk `"${label}`" to ${ms}GB..." -ForegroundColor White
                     Resize-Partition -DriveLetter $partition.DriveLetter -Size $maxSize -ErrorAction SilentlyContinue
                 } else {
