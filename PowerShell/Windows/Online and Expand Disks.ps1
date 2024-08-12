@@ -43,7 +43,7 @@ Write-Host "Complete!" -ForegroundColor Green
 # Variables
 $disks = Get-Disk
 $allDisks = '<%= server.volumes.encodeAsJson() %>' | ConvertFrom-Json
-$tempVolume = Get-Volume -FriendlyName 'Temporary Storage'
+$tempVolume = Get-Volume -FriendlyName 'Temporary Storage' -ErrorAction SilentlyContinue
 $layout = "<%= instance?.layoutCode %>"
 
 # Azure decided to have temporary disks and need to account for that
