@@ -21,18 +21,24 @@
 $ProgressPreference = 'SilentlyContinue'
 
 # Change DVD Drive to Z:
-Start-Sleep 60
+# Get the associated volume
+$volume = get-volume | Where-Object {$_.DriveType -eq 'CD-ROM' -or $_DriveType -eq 'DVD'}
 
-# Get the associated volume for the DVD drive
-$volume = Get-WmiObject -Query "SELECT * FROM Win32_Volume WHERE DriveType = 5"
+# Check if the current drive letter is not already Z
+# Create a script for diskpart
+if ($dvdDrive.DriveLetter -ne 'Z') {
+    # Create the diskpart commands as a string
+    $diskpartCommands = @"
+select volume $($volume.DriveLetter)
+assign letter=Z
+"@
 
-if ($volume) {
-    # Change the drive letter to Z
-    $volume.DriveLetter = "Z:"
-    $volume.Put()
-    Write-Host "DVD drive letter changed to Z."
-} else {
-    Write-Host "No volume found for the DVD drive."
+# Create a temporary file
+$tempFile = New-TemporaryFile
+$diskpartCommands | Set-Content -Path $tempFile.FullName
+
+# Run diskpart with the temporary file
+Start-Process diskpart -ArgumentList "/s $($tempFile.FullName)" -NoNewWindow -Wait
 }
 
 # Remove Recovery Partition (Optional)
