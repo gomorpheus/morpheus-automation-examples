@@ -20,6 +20,21 @@
 # Silence Output
 $ProgressPreference = 'SilentlyContinue'
 
+# Change DVD Drive to Z:
+Start-Sleep 60
+
+# Get the associated volume for the DVD drive
+$volume = Get-WmiObject -Query "SELECT * FROM Win32_Volume WHERE DriveType = 5"
+
+if ($volume) {
+    # Change the drive letter to Z
+    $volume.DriveLetter = "Z:"
+    $volume.Put()
+    Write-Host "DVD drive letter changed to Z."
+} else {
+    Write-Host "No volume found for the DVD drive."
+}
+
 # Remove Recovery Partition (Optional)
 Write-Host "Checking Recovery Partition Status..." -ForegroundColor Cyan
 Get-Partition | Where-Object -FilterScript {$_.Type -eq 'Recovery'} | Remove-Partition -confirm:$false
@@ -27,14 +42,25 @@ Write-Host "Complete!" -ForegroundColor Green
 
 # Variables
 $disks = Get-Disk
-$diskorder = '<%= server.volumes.displayOrder.encodeAsJson().toString() %>' | ConvertFrom-Json
-$diskname = '<%= server.volumes.name.encodeAsJson().toString() %>' | ConvertFrom-Json
-$diskarray = $diskorder | Select-Object @{n='ID'; e={$diskorder[$_]}}, @{n='Name'; e={$diskname[$_]}}
+$allDisks = '<%= server.volumes.encodeAsJson() %>' | ConvertFrom-Json
+$tempVolume = Get-Volume -FriendlyName 'Temporary Storage'
 $layout = "<%= instance?.layoutCode %>"
 
+# Azure decided to have temporary disks and need to account for that
+if ($tempVolume) {
+    Write-Host "Temporary Disk Identified"
+    foreach ($disk in $allDisks) {
+        if ($disk.displayOrder -ne 0) {
+            $disk.displayOrder++
+        }
+    }
+}
 
 foreach ($disk in $disks) {
-    $label = $diskarray | where {$_.id -eq $disk.number} | select -ExpandProperty name
+    $label = $allDisks | where {$_.displayOrder -eq $disk.number} | select -ExpandProperty name
+    if (!($label)) {
+        continue # disk not found, skip
+    }
     Write-Host "Checking Disk `"${label}`"..." -ForegroundColor Cyan
 
     # Online, Initialize, Format, and Assign Drive Letter to additional drives
@@ -42,12 +68,12 @@ foreach ($disk in $disks) {
         if (($disk.IsOffline -eq $true) -or ($disk | Where-Object PartitionStyle -eq 'RAW')) {
             if ($layout -eq 'sql') {
                 Write-Host "Initializing SQL Disk `"${label}`"..." -ForegroundColor White
-                Initialize-Disk -Number $disk.DiskNumber -PassThru|
+                Initialize-Disk -Number $disk.number -PassThru|
                 New-Partition -UseMaximumSize -AssignDriveLetter|
                 Format-Volume -NewFileSystemLabel $label -FileSystem NTFS -AllocationUnitSize 65536 -confirm:$false | Out-Null
             } else {
                 Write-Host "Initializing Disk `"${label}`"..." -ForegroundColor White
-                Initialize-Disk -Number $disk.DiskNumber -PassThru|
+                Initialize-Disk -Number $disk.number -PassThru|
                 New-Partition -UseMaximumSize -AssignDriveLetter|
                 Format-Volume -NewFileSystemLabel $label -FileSystem NTFS -confirm:$false | Out-Null
             }
