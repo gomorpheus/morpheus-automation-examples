@@ -9,18 +9,29 @@ morphheaders = {
     "Authorization": "Bearer " + bearerToken
 }
 
-def updateNetwork(network_vlanId, network_cidr, network_subnet, network_gateway):
+def getNetworkPoolIdByName(pool_name):
+    url = f"https://{host}/api/networks/pools?max=-1"
+    response = requests.get(url, headers=morphheaders, verify=False)
+    data = response.json()
+    pools = data.get('networkPools', [])
+    for pool in pools:
+        if pool.get('name') == pool_name:
+            return pool.get('id')
+    print('Network pool not found')
+    return None
+
+def updateNetwork(network_vlanId, network_cidr, network_subnet, network_gateway, network_pool_id):
     url = f"https://{host}/api/networks/{network_vlanId}"
-    headers = morphheaders
     payload = {
         "network": {
             "vlanId": network_vlanId,
             "cidr": network_cidr,
             "subnet": network_subnet,
-            "gateway": network_gateway
+            "gateway": network_gateway,
+            "pool": network_pool_id
         }
     }
-    response = requests.put(url, headers=headers, json=payload, verify=False)
+    response = requests.put(url, headers=morphheaders, json=payload, verify=False)
     data = response.json()
     if data['success'] == True:
         print(f'Network {network_vlanId} updated successfully')
@@ -29,10 +40,10 @@ def updateNetwork(network_vlanId, network_cidr, network_subnet, network_gateway)
 
 def getAllNetworks():
     url = f"https://{host}/api/networks?max=-1"
-    headers = morphheaders
-    response = requests.get(url, headers=headers, verify=False)
+    response = requests.get(url, headers=morphheaders, verify=False)
     data = response.json()
-    if data['success'] == True:
+    print(f"Total networks found {len(data['networks'])}" if len(data['networks']) > 0 else f"Response: {data}")
+    if len(data['networks']) > 0:
         for network in data['networks']:
             raw_name = network['name']
             print(f'name = {raw_name}')
@@ -96,13 +107,16 @@ def getAllNetworks():
 
             # 6) Compute a simple gateway from the last octet + 1 (retain existing behavior)
             try:
-                network_gateway = int(network_cidr.split('.')[-1]) + 1
+                network_gateway = ".".join(network_cidr.split('.')[:-1] + [str(int(network_cidr.split('.')[-1]) + 1)])
             except Exception:
                 print(f'Skipping network {name}, unable to derive gateway')
                 continue
             print(f'network_gateway = {network_gateway}')
-            print(f'Updating network {name} with network_vlanId = {network_vlanId}, network_cidr = {network_cidr}, network_subnet = {network_subnet}, network_gateway = {network_gateway}')
-            # updateNetwork(network_vlanId, network_cidr, network_subnet, network_gateway)
+            #Get Infoblox pool id to associate with the network which match with network_cidr
+            cidr_with_mask = f"{network_cidr}/{network_subnet}"
+            network_pool_id = getNetworkPoolIdByName(cidr_with_mask)
+            print(f'Updating network {name} with network_vlanId = {network_vlanId}, network_cidr = {network_cidr}, network_subnet = {network_subnet}, network_gateway = {network_gateway}, network_pool_id = {network_pool_id}')
+            # updateNetwork(network_vlanId, network_cidr, network_subnet, network_gateway, network_pool_id)
     else:
         print(f"Failed to get networks")
         return None
