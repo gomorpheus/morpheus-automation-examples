@@ -2,7 +2,7 @@ configspec = morpheus['spec']
 cDrive_size = configspec['volumes'][0]['size']
 cDrive_bytes = configspec['volumes'][0]['sizeBytes']
 cDrive_id = configspec['volumes'][0]['id']
-unit_number = int(configspec['volumes'][0]['unitNumber'])
+#unit_number = int(configspec['volumes'][0]['unitNumber'])
 
 
 # Check if additional disk is needed
@@ -26,7 +26,7 @@ disk_id = cDrive_id
 # Add the specified number of disks from diskOne through diskN
 for i in range(num_disks):
     disk_id += 1
-    unit_number += 1
+#    unit_number += 1
     disk_number = i + 1
     disk_name_map = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five"}
     disk_size_key = f"disk{disk_name_map[disk_number]}"
@@ -49,7 +49,7 @@ for i in range(num_disks):
     new_disk = {
         "id": disk_id,
         "size": disk_size,
-        "unitNumber": str(unit_number),
+#        "unitNumber": str(unit_number),
         "name": disk_name,
         "sizeBytes": disk_size_bytes,
         "rootVolume": False,
@@ -62,13 +62,13 @@ for i in range(num_disks):
 
 # Increment disk_id for the pdrive
 disk_id += 1
-unit_number += 1
+#unit_number += 1
 
 # Add the final pdrive disk with cdrive size
 final_disk = {
     "id": disk_id,
     "size": cDrive_size,
-    "unitNumber": str(unit_number),
+#    "unitNumber": str(unit_number),
     "name": "pdrive",
     "sizeBytes": cDrive_bytes,
     "rootVolume": False,
